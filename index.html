@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<title>ЕГЭ-100 · Портал подготовки с нуля</title>
+<style>
+:root{
+  --bg:#f4f6f9;--card:#ffffff;--card2:#f8fafc;--line:#dde4ee;--ink:#161e29;--mut:#556476;
+  --chem:#0f766e;--chem-soft:#e6f5f2;--bio:#15803d;--bio-soft:#ecfdf3;--rus:#7c3aed;--rus-soft:#f5f3ff;
+  --acc:#0f766e;--accs:#e6f5f2;--acc-ink:#ffffff;--gold:#b45309;--golds:#fef7e6;--bad:#be123c;--bads:#fff1f2;--ok:#15803d;--oks:#eefbf3;
+  --sh:0 4px 18px rgba(15,23,42,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme]){
+    --bg:#0b121c;--card:#131f2e;--card2:#182739;--line:#263950;--ink:#e7edf6;--mut:#94a7be;
+    --chem:#2dd4bf;--chem-soft:#102f33;--bio:#4ade80;--bio-soft:#122e1f;--rus:#a78bfa;--rus-soft:#20183a;
+    --acc:#2dd4bf;--accs:#102f33;--acc-ink:#072322;--gold:#f5c469;--golds:#2b2316;--bad:#fb7185;--bads:#2e181f;--ok:#4ade80;--oks:#132b1e;
+    --sh:0 12px 34px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme=dark]{
+  --bg:#0b121c;--card:#131f2e;--card2:#182739;--line:#263950;--ink:#e7edf6;--mut:#94a7be;
+  --chem:#2dd4bf;--chem-soft:#102f33;--bio:#4ade80;--bio-soft:#122e1f;--rus:#a78bfa;--rus-soft:#20183a;
+  --acc:#2dd4bf;--accs:#102f33;--acc-ink:#072322;--gold:#f5c469;--golds:#2b2316;--bad:#fb7185;--bads:#2e181f;--ok:#4ade80;--oks:#132b1e;
+  --sh:0 12px 34px rgba(0,0,0,.45);
+}
+:root[data-theme=paper]{
+  --bg:#eae1cf;--card:#f6efe1;--card2:#ede3d0;--line:#d6c8b0;--ink:#2a231b;--mut:#625648;
+  --chem:#0f6b63;--chem-soft:#e0ebe4;--bio:#1f6d3d;--bio-soft:#e1ece2;--rus:#6b3fa0;--rus-soft:#e9e1ee;
+  --acc:#0f6b63;--accs:#e0ebe4;--acc-ink:#fdf9f0;--gold:#9c4a08;--golds:#f3e5cb;--bad:#a82039;--bads:#f3dfdf;--ok:#1f6d3d;--oks:#e1ece2;
+  --sh:0 4px 18px rgba(58,42,22,.07);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button,a{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line)}
+.hw{max-width:1100px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:900;font-size:20px;letter-spacing:-.02em;margin-right:auto}.brand span{color:var(--acc)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:600;cursor:pointer}
+.tab.on{background:var(--accs);border-color:var(--acc);color:var(--acc)}
+.tbtn{border:1px solid var(--line);background:var(--card2);border-radius:10px;padding:6px 11px;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none}
+.tbtn:hover{border-color:var(--acc);color:var(--acc)}
+main{max-width:1100px;margin:0 auto;padding:24px 18px 80px}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 26px;box-shadow:var(--sh);margin-bottom:20px}
+.hero h1{margin:0 0 6px;font-size:clamp(24px,3.6vw,36px);line-height:1.18}
+.mut{color:var(--mut)}.sm{font-size:14px}.xs{font-size:12.5px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+.kpi{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+.kpi b{display:block;font-size:24px;line-height:1.15;color:var(--acc)}
+.kpi.red b{color:var(--bad)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--sh);margin-bottom:18px}
+.stage-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 10px;flex-wrap:wrap}
+.stage-head h2{margin:0;font-size:19px}
+.stage-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:14px}
+.topic{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:10px;min-width:0;overflow:hidden;transition:box-shadow .16s ease,border-color .16s ease,opacity .16s ease}
+.topic.ready{border-color:var(--acc)}
+.topic.planned{opacity:.82}
+.topic.sortable{cursor:grab}
+.topic.sortable:active{cursor:grabbing}
+.topic.dragging{opacity:.38;border-style:dashed;border-color:var(--acc);box-shadow:none}
+.topic.just-moved{box-shadow:0 0 0 2px var(--acc),var(--sh)}
+.top-row{display:flex;align-items:flex-start;gap:8px;flex-wrap:nowrap}
+.drag-grip{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin:0 0 0 -4px;border-radius:6px;color:var(--mut);opacity:.65;flex:0 0 auto;cursor:grab;user-select:none;transition:background .15s,color .15s,opacity .15s}
+.topic:hover .drag-grip,.drag-grip:hover{opacity:1;color:var(--acc);background:var(--accs)}
+.topic.dragging .drag-grip{cursor:grabbing}
+.move-btns{display:inline-flex;align-items:center;gap:4px;margin-left:auto}
+.move-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;border-radius:8px;border:1px solid var(--line);background:var(--card2);color:var(--mut);font-size:13px;font-weight:700;cursor:pointer;opacity:.7;transition:opacity .15s,border-color .15s,color .15s,background .15s}
+.topic:hover .move-btn,.topic:focus-within .move-btn{opacity:1}
+.move-btn:hover:not(:disabled){border-color:var(--acc);color:var(--acc);background:var(--accs)}
+.move-btn:disabled{opacity:.25;cursor:default}
+@media (hover:none){.move-btn,.drag-grip{opacity:1}}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--card2);border:1px solid var(--line);color:var(--mut);white-space:nowrap}
+.pill.meta{white-space:normal;overflow-wrap:anywhere;border-radius:12px;line-height:1.35;max-width:100%;flex:0 1 auto;min-width:0}
+.pill.status{flex:0 0 auto;white-space:nowrap;margin-left:auto}
+.pill.ok{background:var(--oks);border-color:var(--ok);color:var(--ok)}
+.pill.warn{background:var(--golds);border-color:var(--gold);color:var(--gold)}
+.pill.red{background:var(--bads);border-color:var(--bad);color:var(--bad)}
+.topic h3{margin:0;font-size:16.5px;line-height:1.32;overflow-wrap:anywhere}
+.bar{height:7px;background:var(--card2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:10px;border:1px solid var(--acc);background:var(--acc);color:var(--acc-ink);font-weight:650;font-size:13.5px;text-decoration:none;cursor:pointer}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:var(--card2);border-color:var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--acc);color:var(--acc)}
+.btn.sm{padding:5px 10px;font-size:12.5px;border-radius:8px}
+.btn.danger{background:var(--bads);border-color:var(--bad);color:var(--bad)}
+.repeat-list{margin:8px 0 0;padding-left:18px}
+.repeat-list li{margin:5px 0}
+.tbtn{display:inline-flex;align-items:center;gap:6px}
+.tbtn .cnt{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--golds);border:1px solid var(--gold);color:var(--gold);font-size:11px;font-weight:700}
+.hide{display:none!important}
+.modal-bg{position:fixed;inset:0;z-index:50;background:rgba(8,14,24,.62);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh);width:min(760px,100%);max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.modal-hd h2{margin:0;font-size:19px}
+.modal-bd{padding:16px 20px 22px;overflow:auto;display:flex;flex-direction:column;gap:18px}
+.m-sec h3{margin:0 0 8px;font-size:15.5px}
+.m-list{display:flex;flex-direction:column;gap:8px}
+.m-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
+.m-info{flex:1 1 240px;min-width:0}
+.m-info b{display:block;font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}
+.m-btns{display:flex;gap:6px;flex-wrap:wrap}
+.cli-box{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);display:flex;flex-direction:column;gap:6px}
+.cli-cmd{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%;overflow-x:auto;white-space:nowrap}
+.tbtn.sync-ok{border-color:var(--ok);background:var(--oks);color:var(--ok)}
+.tbtn.sync-err{border-color:var(--bad);background:var(--bads);color:var(--bad)}
+</style>
+</head>
+<body>
+<header>
+  <div class="hw">
+    <div class="brand">ЕГЭ-<span>100</span></div>
+    <nav class="tabs" id="subjTabs"></nav>
+    <a class="tbtn" href="trener.html">🎯 Тренажёр</a>
+    <button type="button" class="tbtn" id="syncBtn" title="Синхронизировать прогресс и загрузить актуальные учебники/тренажёры с ПК">🔄 Синхронизировать</button>
+    <button type="button" class="tbtn" id="manageBtn">⚙ Управление</button>
+    <button type="button" class="tbtn" id="themeBtn">◐</button>
+  </div>
+</header>
+<main id="app"></main>
+<div class="modal-bg hide" id="manageModal" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2 id="manageTitle">Управление учебниками и тренажёрами</h2>
+      <button type="button" class="tbtn" id="manageClose" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="modal-bd" id="manageBody"></div>
+  </div>
+</div>
+<script src="topics/catalog.js"></script>
+<script src="sync-client.js"></script>
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},del(k){try{localStorage.removeItem(k);}catch(e){}}};
+const THEME_KEY='ege100-theme';
+const HIDDEN_TB_KEY='ege100-hidden-textbooks';
+const HIDDEN_TR_KEY='tr-removed-packs';
+const ORDER_KEY='ege100-topic-order';
+const DAY=864e5, now=()=>Date.now();
+let CAT=window.EGE100_CATALOG||{textbooks:[],trainers:[],course_map:{subjects:{}}};
+let TBOOK={}, TRENER={}, TOPIC_TITLE={};
+function rebuildCatalogMaps(){
+  CAT=window.EGE100_CATALOG||{textbooks:[],trainers:[],course_map:{subjects:{}}};
+  TBOOK={};(CAT.textbooks||[]).forEach(x=>TBOOK[x.id]=x);
+  TRENER={};(CAT.trainers||[]).forEach(x=>TRENER[x.id]=x);
+  TOPIC_TITLE={};
+  Object.values((CAT.course_map&&CAT.course_map.subjects)||{}).forEach(s=>{(s.stages||[]).forEach(st=>{(st.topics||[]).forEach(t=>{if(t&&t.id&&t.title)TOPIC_TITLE[t.id]=t.title;});});});
+  (CAT.textbooks||[]).forEach(x=>{if(x&&x.id&&x.title&&!TOPIC_TITLE[x.id])TOPIC_TITLE[x.id]=x.title;});
+  (CAT.trainers||[]).forEach(x=>{if(x&&x.id&&x.title&&!TOPIC_TITLE[x.id])TOPIC_TITLE[x.id]=x.title;});
+}
+rebuildCatalogMaps();
+
+let SUBJ=LS.get('ege100-portal-subj','all');
+let LAST_CLI_CMD='';
+
+function getHiddenSet(key){const a=LS.get(key,[]);return new Set(Array.isArray(a)?a.filter(x=>typeof x==='string'):[]);}
+function setHiddenSet(key,set){
+  LS.set(key,[...set]);
+  if(window.EGE100Sync){window.EGE100Sync.touchPref(key);if(window.EGE100Sync.isConfigured())window.EGE100Sync.syncGist().catch(()=>{});}
+}
+
+function getOrderMap(){
+  const m=LS.get(ORDER_KEY,{});
+  return (m&&typeof m==='object'&&!Array.isArray(m))?m:{};
+}
+function applyTopicOrder(items, sectionKey){
+  const saved=getOrderMap()[sectionKey];
+  if(!Array.isArray(saved)||!saved.length)return items.slice();
+  const byId=new Map(items.map(x=>[x.id,x]));
+  const out=[], seen=new Set();
+  saved.forEach(id=>{if(byId.has(id)&&!seen.has(id)){out.push(byId.get(id));seen.add(id);}});
+  items.forEach(x=>{if(!seen.has(x.id)){out.push(x);seen.add(x.id);}});
+  return out;
+}
+function mergeOrder(existing, visibleIds){
+  const visSet=new Set(visibleIds);
+  if(!Array.isArray(existing)||!existing.length)return visibleIds.slice();
+  const out=[];
+  let vi=0;
+  existing.forEach(id=>{
+    if(visSet.has(id)){if(vi<visibleIds.length)out.push(visibleIds[vi++]);}
+    else out.push(id);
+  });
+  while(vi<visibleIds.length)out.push(visibleIds[vi++]);
+  return out;
+}
+function saveSectionOrder(sectionKey, visibleIds, defaultIds){
+  const map=getOrderMap();
+  const isDefault=visibleIds.length===defaultIds.length&&visibleIds.every((id,i)=>id===defaultIds[i]);
+  const existing=Array.isArray(map[sectionKey])?map[sectionKey]:[];
+  const visSet=new Set(visibleIds);
+  const hasOther=existing.some(id=>!visSet.has(id));
+  if(isDefault&&!hasOther){
+    delete map[sectionKey];
+  }else{
+    map[sectionKey]=mergeOrder(existing,visibleIds);
+  }
+  LS.set(ORDER_KEY,map);
+  if(window.EGE100Sync){window.EGE100Sync.touchPref(ORDER_KEY);if(window.EGE100Sync.isConfigured())window.EGE100Sync.syncGist().catch(()=>{});}
+}
+function resetSectionOrder(sectionKey, visibleIds, defaultIds){
+  saveSectionOrder(sectionKey,defaultIds,defaultIds);
+  render();
+}
+function flipMove(grid, mutateDom, skipEl){
+  const cards=[...grid.querySelectorAll('.topic')];
+  const before=new Map();
+  cards.forEach(c=>before.set(c,c.getBoundingClientRect()));
+  mutateDom();
+  cards.forEach(c=>{
+    if(c===skipEl)return;
+    const prev=before.get(c);
+    const next=c.getBoundingClientRect();
+    const dx=prev.left-next.left, dy=prev.top-next.top;
+    if(!dx&&!dy)return;
+    c.style.transition='none';
+    c.style.transform='translate('+dx+'px,'+dy+'px)';
+    c.getBoundingClientRect();
+    c.style.transition='transform .2s cubic-bezier(.2,.8,.2,1)';
+    c.style.transform='';
+    const clean=()=>{c.style.transition='';c.removeEventListener('transitionend',clean);};
+    c.addEventListener('transitionend',clean);
+    setTimeout(clean,240);
+  });
+}
+function flashMoved(card){
+  card.classList.add('just-moved');
+  setTimeout(()=>card.classList.remove('just-moved'),360);
+}
+function syncGridState(grid, sectionKey, defaultIds, resetBtn, persist){
+  const cards=[...grid.querySelectorAll('.topic')];
+  cards.forEach((c,i)=>{
+    const prevBtn=c.querySelector('.move-prev');
+    const nextBtn=c.querySelector('.move-next');
+    if(prevBtn)prevBtn.disabled=(i===0);
+    if(nextBtn)nextBtn.disabled=(i===cards.length-1);
+  });
+  const curIds=cards.map(c=>c.dataset.topicId);
+  if(persist)saveSectionOrder(sectionKey,curIds,defaultIds);
+  if(resetBtn){
+    const isDef=curIds.length===defaultIds.length&&curIds.every((id,i)=>id===defaultIds[i]);
+    resetBtn.classList.toggle('hide',isDef);
+  }
+}
+function enableSortableGrid(grid, sectionKey, defaultIds, resetBtn){
+  const cards=[...grid.querySelectorAll('.topic')];
+  if(cards.length<2)return;
+  let dragged=null;
+  cards.forEach(card=>{
+    card.draggable=true;
+    card.classList.add('sortable');
+    card.querySelectorAll('a').forEach(a=>{a.draggable=false;});
+    card.addEventListener('dragstart',e=>{
+      if(e.target&&e.target.closest('.move-btn')){e.preventDefault();return;}
+      dragged=card;
+      if(e.dataTransfer){
+        e.dataTransfer.effectAllowed='move';
+        e.dataTransfer.setData('text/plain',card.dataset.topicId||'');
+      }
+      requestAnimationFrame(()=>card.classList.add('dragging'));
+    });
+    card.addEventListener('dragend',()=>{
+      if(!dragged)return;
+      const moved=dragged;
+      moved.classList.remove('dragging');
+      dragged=null;
+      syncGridState(grid,sectionKey,defaultIds,resetBtn,true);
+      flashMoved(moved);
+    });
+    const prevBtn=card.querySelector('.move-prev');
+    const nextBtn=card.querySelector('.move-next');
+    if(prevBtn)prevBtn.onclick=e=>{
+      e.stopPropagation();
+      const prev=card.previousElementSibling;
+      if(!prev)return;
+      flipMove(grid,()=>grid.insertBefore(card,prev));
+      syncGridState(grid,sectionKey,defaultIds,resetBtn,true);
+      flashMoved(card);
+      (prevBtn.disabled&&nextBtn?nextBtn:prevBtn).focus();
+    };
+    if(nextBtn)nextBtn.onclick=e=>{
+      e.stopPropagation();
+      const next=card.nextElementSibling;
+      if(!next)return;
+      flipMove(grid,()=>grid.insertBefore(card,next.nextSibling));
+      syncGridState(grid,sectionKey,defaultIds,resetBtn,true);
+      flashMoved(card);
+      (nextBtn.disabled&&prevBtn?prevBtn:nextBtn).focus();
+    };
+  });
+  grid.addEventListener('dragover',e=>{
+    if(!dragged||dragged.parentElement!==grid)return;
+    e.preventDefault();
+    if(e.dataTransfer)e.dataTransfer.dropEffect='move';
+    const target=e.target&&e.target.closest('.topic');
+    if(!target||target===dragged||target.parentElement!==grid)return;
+    const all=[...grid.children];
+    const fromIdx=all.indexOf(dragged);
+    const toIdx=all.indexOf(target);
+    if(fromIdx===-1||toIdx===-1||fromIdx===toIdx)return;
+    flipMove(grid,()=>{
+      if(fromIdx<toIdx)grid.insertBefore(dragged,target.nextSibling);
+      else grid.insertBefore(dragged,target);
+    },dragged);
+  });
+  grid.addEventListener('drop',e=>{if(dragged&&dragged.parentElement===grid)e.preventDefault();});
+  syncGridState(grid,sectionKey,defaultIds,resetBtn,false);
+}
+
+function formatRanges(nums){
+  if(!Array.isArray(nums)||!nums.length)return '';
+  const items=nums.map(x=>({raw:x,num:Number(x),isNum:/^\d+$/.test(String(x).trim())}));
+  if(items.some(x=>!x.isNum))return items.map(x=>String(x.raw)).join(', ');
+  const sorted=[...new Set(items.map(x=>x.num))].sort((a,b)=>a-b);
+  const out=[];
+  let start=sorted[0], prev=sorted[0];
+  for(let i=1;i<sorted.length;i++){
+    if(sorted[i]===prev+1){prev=sorted[i];}
+    else{out.push(start===prev?String(start):start+'–'+prev);start=prev=sorted[i];}
+  }
+  out.push(start===prev?String(start):start+'–'+prev);
+  return out.join(', ');
+}
+
+const THEMES=['auto','light','paper','dark'];
+const THEME_LABELS={auto:'◐ Авто',light:'☀ Светлая',paper:'▤ Бумага',dark:'☾ Тёмная'};
+function applyTheme(){
+  const raw=LS.get(THEME_KEY,'auto');
+  const t=THEMES.includes(raw)?raw:'auto';
+  if(t==='auto')document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme',t);
+  const btn=$('#themeBtn');
+  btn.textContent=THEME_LABELS[t];
+  btn.title='Переключить тему оформления (Авто → Светлая → Бумага → Тёмная)';
+  const mc=document.querySelector('meta[name="theme-color"]');
+  if(mc)mc.setAttribute('content',t==='paper'?'#f6efe1':t==='dark'?'#0b121c':'#0f766e');
+}
+$('#themeBtn').onclick=()=>{
+  const raw=LS.get(THEME_KEY,'auto');
+  const i=THEMES.indexOf(raw);
+  LS.set(THEME_KEY,THEMES[(i+1)%THEMES.length]);
+  applyTheme();
+};
+
+function topicStats(id,hiddenTb,hiddenTr){
+  const tbRaw=TBOOK[id], trRaw=TRENER[id];
+  const tbHidden=!!(tbRaw&&hiddenTb&&hiddenTb.has(id));
+  const trHidden=!!(trRaw&&hiddenTr&&hiddenTr.has(id));
+  const tb=tbHidden?null:tbRaw;
+  const tr=trHidden?null:trRaw;
+  const kon=LS.get('ege100:kon:'+id,null);
+  const doneMods=kon&&kon.completed?Object.values(kon.completed).filter(Boolean).length:0;
+  const totalMods=tb?tb.modules||0:0;
+  const st=LS.get('tr-state-'+id,null);
+  let dueF=0, dueS=0, red=0, learnedF=0;
+  if(st){
+    red=(st.red||[]).length;
+    Object.values(st.facts||{}).forEach(f=>{if(f&&f.n){if(f.l>=3)learnedF++;if(f.bad||now()>=f.due)dueF++;}});
+    Object.values(st.sk||{}).forEach(m=>{if(m&&m.last&&now()>=m.last+m.S*DAY)dueS++;});
+  }
+  return {tb,tr,tbHidden,trHidden,doneMods,totalMods,dueF,dueS,red,learnedF};
+}
+
+function renderTabs(){
+  const list=[['all','Все предметы'],['chemistry','⚗ Химия'],['biology','🧬 Биология'],['russian','✍ Русский язык']];
+  const host=$('#subjTabs');host.innerHTML='';
+  list.forEach(([k,lbl])=>{
+    const b=document.createElement('button');
+    b.type='button';b.className='tab'+(SUBJ===k?' on':'');b.textContent=lbl;
+    b.onclick=()=>{SUBJ=k;LS.set('ege100-portal-subj',k);render();};
+    host.append(b);
+  });
+}
+
+function topicCard(item, subjKey, hiddenTb, hiddenTr, sortable){
+  const s=topicStats(item.id,hiddenTb,hiddenTr);
+  const ready=!!s.tb;
+  const div=document.createElement('article');
+  div.className='topic '+(ready?'ready':'planned');
+  div.dataset.topicId=item.id;
+  const kimRanges=formatRanges(item.kim||[]);
+  const codes=(item.codes||[]).filter(Boolean);
+  const metaParts=[];
+  if(kimRanges)metaParts.push('№ '+kimRanges);
+  if(codes.length)metaParts.push('коды '+codes.join(', '));
+  const gripHtml=sortable
+    ?'<span class="drag-grip" title="Перетащите карточку, чтобы изменить порядок" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><circle cx="4.5" cy="3" r="1.2"/><circle cx="9.5" cy="3" r="1.2"/><circle cx="4.5" cy="7" r="1.2"/><circle cx="9.5" cy="7" r="1.2"/><circle cx="4.5" cy="11" r="1.2"/><circle cx="9.5" cy="11" r="1.2"/></svg></span>'
+    :'';
+  const metaPill=metaParts.length?'<span class="pill meta">'+esc(metaParts.join(' · '))+'</span>':'<span></span>';
+  const badge=ready?'<span class="pill status ok">Учебник готов</span>':(s.tbHidden?'<span class="pill status warn">Скрыт</span>':'<span class="pill status">В маршруте</span>');
+  let progHtml='';
+  if(ready&&s.totalMods){
+    const p=Math.round(100*s.doneMods/s.totalMods);
+    progHtml='<div><div class="xs mut" style="display:flex;justify-content:space-between"><span>Модули учебника</span><b>'+s.doneMods+' / '+s.totalMods+'</b></div><div class="bar"><i style="width:'+p+'%"></i></div></div>';
+  }
+  const alerts=[];
+  if(s.red)alerts.push('<span class="pill red">Красная папка: '+s.red+'</span>');
+  if(s.dueF||s.dueS)alerts.push('<span class="pill warn">Повтор: '+(s.dueF+s.dueS)+'</span>');
+  const prereqs=(item.prereqs||[]).length
+    ?'<div class="xs mut">Опора: '+item.prereqs.map(pid=>esc(TOPIC_TITLE[pid]||pid)).join(', ')+'</div>'
+    :'<div class="xs mut">Старт с нуля — опора не требуется</div>';
+  const moveHtml=sortable
+    ?'<span class="move-btns"><button type="button" class="move-btn move-prev" title="Сдвинуть влево" aria-label="Сдвинуть влево">←</button><button type="button" class="move-btn move-next" title="Сдвинуть вправо" aria-label="Сдвинуть вправо">→</button></span>'
+    :'';
+  div.innerHTML='<div class="top-row">'+gripHtml+metaPill+badge+'</div>'
+    +'<h3>'+esc(item.title)+'</h3>'
+    +prereqs
+    +(alerts.length?'<div style="display:flex;gap:6px;flex-wrap:wrap">'+alerts.join('')+'</div>':'')
+    +progHtml
+    +'<div class="actions">'
+    +(s.tb?'<a class="btn" href="topics/'+esc(s.tb.file)+'">📖 Открыть учебник</a>':(s.tbHidden?'<span class="xs mut">Учебник скрыт в браузере</span>':'<span class="xs mut">Учебник ещё не собран</span>'))
+    +(s.tr?'<a class="btn ghost" href="trener.html?topic='+encodeURIComponent(item.id)+'">🎯 Тренажёр</a>':'')
+    +moveHtml
+    +'</div>';
+  return div;
+}
+
+function updateManageBtn(hiddenTb,hiddenTr){
+  const btn=$('#manageBtn');
+  const cnt=(CAT.textbooks||[]).filter(x=>hiddenTb.has(x.id)).length+(CAT.trainers||[]).filter(x=>hiddenTr.has(x.id)).length;
+  btn.innerHTML='⚙ Управление'+(cnt?' <span class="cnt">'+cnt+'</span>':'');
+}
+
+async function copyText(txt){
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(txt);return true;}
+  }catch(e){}
+  try{
+    const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.append(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok;
+  }catch(e){return false;}
+}
+
+let LOCAL_API=false;
+let SERVER_INFO=null;
+const GH=window.EGE100Sync;
+
+function reloadCatalogScript(){
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='topics/catalog.js?v='+Date.now();
+    s.onload=()=>{s.remove();rebuildCatalogMaps();res();};
+    s.onerror=()=>{s.remove();rej(new Error('Не удалось загрузить catalog.js'));};
+    document.head.append(s);
+  });
+}
+
+async function runSync(opts){
+  const {updateContent=true,resetKeys=[],silent=false}=opts||{};
+  const btn=$('#syncBtn');
+  if(!GH)return false;
+  if(btn&&!silent){btn.disabled=true;btn.classList.remove('sync-ok','sync-err');btn.textContent='⏳ Синхронизация...';}
+  try{
+    const res=await GH.syncAll({updateContent,resetKeys,swPath:'./sw.js'});
+    if(updateContent){
+      try{await reloadCatalogScript();}catch(e){}
+    }
+    render();
+    if(!res.ok){
+      throw new Error(res.errors.join('; ')||'Ошибка синхронизации');
+    }
+    if(btn&&!silent){
+      const cached=res.content&&res.content.ok&&res.content.cached?(' ('+res.content.cached+' ф.)'):'';
+      btn.disabled=false;btn.classList.add('sync-ok');
+      btn.textContent=GH.isConfigured()?'✓ Синхронизировано'+cached:'✓ Контент обновлён'+cached;
+      setTimeout(()=>{btn.classList.remove('sync-ok');btn.textContent='🔄 Синхронизировать';},2600);
+    }
+    return true;
+  }catch(err){
+    if(btn&&!silent){
+      btn.disabled=false;btn.classList.add('sync-err');btn.textContent='✕ Ошибка';
+      setTimeout(()=>{btn.classList.remove('sync-err');btn.textContent='🔄 Синхронизировать';},2800);
+      alert('Синхронизация не удалась: '+(err&&err.message?err.message:err));
+    }
+    return false;
+  }
+}
+
+async function checkLocalApi(){
+  if(location.protocol!=='http:'&&location.protocol!=='https:')return false;
+  try{
+    const r=await fetch('/api/info',{cache:'no-store'});
+    if(!r.ok)return false;
+    const j=await r.json();
+    LOCAL_API=Boolean(j&&j.ok);
+    SERVER_INFO=LOCAL_API?j:null;
+    if(LOCAL_API&&j.github_pages_url&&GH){
+      const cfg=GH.getConfig();
+      if(!cfg.siteUrl)GH.setConfig({siteUrl:j.github_pages_url});
+    }
+    return LOCAL_API;
+  }catch(e){LOCAL_API=false;SERVER_INFO=null;return false;}
+}
+
+if(GH){
+  GH.registerSW('./sw.js');
+  const importedFromLink=GH.importConfigFromHash();
+  if(importedFromLink){
+    runSync({updateContent:true,silent:false});
+  }else if(GH.isConfigured()){
+    runSync({updateContent:false,silent:true});
+  }
+}
+checkLocalApi();
+
+const syncBtnEl=$('#syncBtn');
+if(syncBtnEl)syncBtnEl.onclick=()=>{
+  if(GH&&!GH.isConfigured()&&location.protocol!=='https:'){
+    openManageModal();
+    return;
+  }
+  runSync({updateContent:true,silent:false});
+};
+
+function renderManageModal(){
+  const body=$('#manageBody');
+  const hiddenTb=getHiddenSet(HIDDEN_TB_KEY);
+  const hiddenTr=getHiddenSet(HIDDEN_TR_KEY);
+  body.innerHTML='';
+
+  if(GH){
+    const cfg=GH.getConfig();
+    const ghBox=document.createElement('div');ghBox.className='cli-box';
+    const pagesUrl=(SERVER_INFO&&SERVER_INFO.github_pages_url)||cfg.siteUrl||(location.protocol==='https:'?(location.origin+location.pathname):'');
+    if(cfg.token){
+      ghBox.innerHTML='<div class="xs"><b>☁ Облачная синхронизация GitHub:</b> <span style="color:var(--ok);font-weight:700">подключено</span>'
+        +(pagesUrl?' · <span class="mut">'+esc(pagesUrl)+'</span>':'')+'</div>'
+        +'<div class="xs mut">Прогресс учебников и тренажёров автоматически объединяется между ПК и телефоном через приватный GitHub Gist.</div>';
+      const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin-top:4px';
+
+      const syncNow=document.createElement('button');syncNow.type='button';syncNow.className='btn sm';syncNow.textContent='🔄 Синхронизировать сейчас';
+      syncNow.onclick=async()=>{syncNow.disabled=true;syncNow.textContent='⏳...';await runSync({updateContent:true,silent:false});syncNow.disabled=false;syncNow.textContent='🔄 Синхронизировать сейчас';};
+
+      const copyPhone=document.createElement('button');copyPhone.type='button';copyPhone.className='btn ghost sm';copyPhone.textContent='📱 Ссылка для телефона (1 клик)';
+      copyPhone.onclick=async()=>{
+        let base=pagesUrl;
+        if(!base){
+          base=prompt('Введите адрес вашего сайта на GitHub Pages (например https://username.github.io/ege-100/index.html):','');
+          if(!base)return;
+          GH.setConfig({siteUrl:base.trim()});
+        }
+        const link=GH.buildPhoneSetupLink(base);
+        const ok=await copyText(link);
+        copyPhone.textContent=ok?'✓ Ссылка скопирована — отправьте её на телефон':'Не удалось скопировать';
+        setTimeout(()=>copyPhone.textContent='📱 Ссылка для телефона (1 клик)',3000);
+      };
+
+      const disconnect=document.createElement('button');disconnect.type='button';disconnect.className='btn danger sm';disconnect.textContent='Отключить';
+      disconnect.onclick=()=>{
+        if(!confirm('Отключить синхронизацию GitHub в этом браузере? Локальный прогресс сохранится.'))return;
+        GH.clearConfig();renderManageModal();
+      };
+      row.append(syncNow,copyPhone,disconnect);
+      ghBox.append(row);
+    }else{
+      ghBox.innerHTML='<div class="xs"><b>☁ Облачная синхронизация прогресса (GitHub Gist)</b></div>'
+        +'<div class="xs mut">Чтобы прогресс учебников и тренажёров синхронизировался между ПК и Android, вставьте один раз GitHub Token с правом <code>gist</code> (создаётся в GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)).</div>';
+      const siteInp=document.createElement('input');siteInp.type='url';siteInp.className='cli-cmd';
+      siteInp.placeholder='Адрес сайта GitHub Pages (например https://user.github.io/ege-100/index.html)';
+      siteInp.value=pagesUrl;
+      const tokInp=document.createElement('input');tokInp.type='password';tokInp.className='cli-cmd';
+      tokInp.placeholder='GitHub Personal Access Token (ghp_...)';
+      const connRow=document.createElement('div');connRow.style.cssText='display:flex;gap:8px;align-items:center;flex-wrap:wrap';
+      const connBtn=document.createElement('button');connBtn.type='button';connBtn.className='btn sm';connBtn.textContent='Подключить GitHub';
+      connBtn.onclick=async()=>{
+        const t=tokInp.value.trim();
+        if(!t){alert('Вставьте GitHub Token с правом gist.');return;}
+        connBtn.disabled=true;connBtn.textContent='Подключаем...';
+        try{
+          await GH.connectGitHub(t,siteInp.value.trim());
+          await runSync({updateContent:false,silent:true});
+          renderManageModal();
+        }catch(e){
+          connBtn.disabled=false;connBtn.textContent='Подключить GitHub';
+          alert('Ошибка подключения: '+(e&&e.message?e.message:e));
+        }
+      };
+      connRow.append(connBtn);
+      ghBox.append(siteInp,tokInp,connRow);
+    }
+    body.append(ghBox);
+  }
+
+  const note=document.createElement('div');
+  note.className='xs mut';
+  note.textContent=LOCAL_API
+    ?'Здесь можно скрыть учебник или тренажёр, сбросить прогресс или сразу удалить файлы с диска в один клик (каталог обновится автоматически).'
+    :'Здесь можно скрыть учебник или тренажёр в этом браузере, сбросить прогресс или получить команду CLI. Чтобы удалять в один клик без команд, откройте платформу через «Открыть ЕГЭ-100.bat».';
+  body.append(note);
+
+  if(LAST_CLI_CMD&&!LOCAL_API){
+    const cli=document.createElement('div');cli.className='cli-box';
+    cli.innerHTML='<div class="xs mut">Команда для удаления с диска (выполните в корне проекта):</div>';
+    const inp=document.createElement('input');inp.type='text';inp.readOnly=true;inp.className='cli-cmd';inp.value=LAST_CLI_CMD;
+    inp.onclick=()=>inp.select();
+    cli.append(inp);
+    body.append(cli);
+  }
+
+  function makeSection(title, items, kind){
+    const sec=document.createElement('section');sec.className='m-sec';
+    const h3=document.createElement('h3');h3.textContent=title+' ('+items.length+')';sec.append(h3);
+    if(!items.length){
+      const p=document.createElement('div');p.className='xs mut';p.textContent='Пока ничего не собрано.';sec.append(p);
+      return sec;
+    }
+    const list=document.createElement('div');list.className='m-list';
+    items.forEach(item=>{
+      const isHidden=kind==='textbook'?hiddenTb.has(item.id):hiddenTr.has(item.id);
+      const row=document.createElement('div');row.className='m-row';
+      const info=document.createElement('div');info.className='m-info';
+      const statusTxt=isHidden?' · скрыт в браузере':'';
+      info.innerHTML='<b>'+esc(item.title)+'</b><span class="xs mut">'+esc(item.subject||item.subjectSlug||'')+' · '+esc(item.id)+esc(statusTxt)+'</span>';
+
+      const btns=document.createElement('div');btns.className='m-btns';
+
+      const toggleBtn=document.createElement('button');toggleBtn.type='button';toggleBtn.className='btn ghost sm';
+      toggleBtn.textContent=isHidden?'Вернуть':'Скрыть';
+      toggleBtn.onclick=()=>{
+        const key=kind==='textbook'?HIDDEN_TB_KEY:HIDDEN_TR_KEY;
+        const s=getHiddenSet(key);
+        if(isHidden)s.delete(item.id);else s.add(item.id);
+        setHiddenSet(key,s);
+        render();renderManageModal();
+      };
+
+      const resetBtn=document.createElement('button');resetBtn.type='button';resetBtn.className='btn ghost sm';
+      resetBtn.textContent='Сбросить прогресс';
+      resetBtn.onclick=()=>{
+        const label=kind==='textbook'?'учебника':'тренажёра';
+        if(!confirm('Сбросить прогресс '+label+' «'+item.title+'» в этом браузере?'))return;
+        const rkey=kind==='textbook'?'ege100:kon:'+item.id:'tr-state-'+item.id;
+        LS.del(rkey);
+        if(GH&&GH.isConfigured())runSync({updateContent:false,resetKeys:[rkey],silent:true});
+        render();renderManageModal();
+      };
+
+      const delBtn=document.createElement('button');delBtn.type='button';delBtn.className='btn danger sm';
+      delBtn.textContent='Удалить с диска';
+      delBtn.onclick=async()=>{
+        const slug=item.subjectSlug||'chemistry';
+        if(LOCAL_API){
+          const label=kind==='textbook'?'учебника':'тренажёра';
+          if(!confirm('Удалить файлы '+label+' «'+item.title+'» с диска безвозвратно?'))return;
+          delBtn.disabled=true;
+          delBtn.textContent='Удаляем...';
+          try{
+            const r=await fetch('/api/remove',{
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({subject:slug,id:item.id,what:kind})
+            });
+            const j=await r.json();
+            if(!r.ok||!j.ok)throw new Error((j&&j.error)||'Ошибка удаления');
+            LS.del(kind==='textbook'?'ege100:kon:'+item.id:'tr-state-'+item.id);
+            location.reload();
+            return;
+          }catch(err){
+            delBtn.disabled=false;
+            delBtn.textContent='Ошибка';
+            alert('Не удалось удалить: '+err.message);
+            return;
+          }
+        }
+        const cmd='python core/cli.py remove '+slug+' '+item.id+' --what '+kind;
+        LAST_CLI_CMD=cmd;
+        const copied=await copyText(cmd);
+        renderManageModal();
+        delBtn.textContent=copied?'Команда скопирована':'Команда показана выше';
+      };
+
+      btns.append(toggleBtn,resetBtn,delBtn);
+      row.append(info,btns);
+      list.append(row);
+    });
+    sec.append(list);
+    return sec;
+  }
+
+  body.append(makeSection('Учебники',CAT.textbooks||[],'textbook'));
+  body.append(makeSection('Пакеты тренажёра',CAT.trainers||[],'trainer'));
+}
+
+function openManageModal(){
+  renderManageModal();
+  $('#manageModal').classList.remove('hide');
+}
+function closeManageModal(){
+  $('#manageModal').classList.add('hide');
+}
+$('#manageBtn').onclick=openManageModal;
+$('#manageClose').onclick=closeManageModal;
+$('#manageModal').onclick=e=>{if(e.target===$('#manageModal'))closeManageModal();};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#manageModal').classList.contains('hide'))closeManageModal();});
+
+function render(){
+  renderTabs();
+  const hiddenTb=getHiddenSet(HIDDEN_TB_KEY);
+  const hiddenTr=getHiddenSet(HIDDEN_TR_KEY);
+  updateManageBtn(hiddenTb,hiddenTr);
+
+  const app=$('#app');app.innerHTML='';
+  const subjs=(CAT.course_map&&CAT.course_map.subjects)||{};
+  const keys=SUBJ==='all'?Object.keys(subjs):[SUBJ].filter(k=>subjs[k]);
+
+  const activeTb=(CAT.textbooks||[]).filter(t=>!hiddenTb.has(t.id));
+  const activeTr=(CAT.trainers||[]).filter(t=>!hiddenTr.has(t.id));
+  let totalReady=activeTb.length, totalTrener=activeTr.length, totalRed=0, totalDue=0;
+  const repeatRows=[];
+  activeTr.forEach(tr=>{
+    const st=topicStats(tr.id,hiddenTb,hiddenTr);
+    totalRed+=st.red;totalDue+=st.dueF+st.dueS;
+    if(st.red||st.dueF||st.dueS)repeatRows.push({id:tr.id,title:tr.title,st});
+  });
+
+  const hero=document.createElement('section');hero.className='hero';
+  hero.innerHTML='<h1>Маршрут ЕГЭ-100: с нуля до максимума</h1>'
+    +'<p class="mut" style="margin:0">Темы выстроены по зависимостям: каждая следующая опирается только на предыдущие. Порядок карточек в любом разделе можно менять перетаскиванием или кнопками ← →.</p>'
+    +'<div class="kpi-grid">'
+    +'<div class="kpi"><b>'+totalReady+'</b>готовых учебников</div>'
+    +'<div class="kpi"><b>'+totalTrener+'</b>пакетов тренажёра</div>'
+    +'<div class="kpi"><b>'+totalDue+'</b>повторов на сегодня</div>'
+    +'<div class="kpi red"><b>'+totalRed+'</b>ошибок в Красной папке</div>'
+    +'</div>';
+  app.append(hero);
+
+  if(repeatRows.length){
+    const rc=document.createElement('section');rc.className='card';
+    rc.innerHTML='<h2 style="margin:0 0 6px;font-size:18px">Пора повторить сегодня</h2><ul class="repeat-list">'
+      +repeatRows.map(r=>'<li><a href="trener.html?topic='+encodeURIComponent(r.id)+'">'+esc(r.title)+'</a> — красная папка: '+r.st.red+', к повтору: '+(r.st.dueF+r.st.dueS)+'</li>').join('')+'</ul>';
+    app.append(rc);
+  }
+
+  function renderSection(title, rawItems, sectionKey, fallbackSubj){
+    const defaultIds=rawItems.map(x=>x.id);
+    const ordered=applyTopicOrder(rawItems,sectionKey);
+    const sortable=ordered.length>1;
+    const hd=document.createElement('div');hd.className='stage-head';
+    const h2=document.createElement('h2');h2.textContent=title;hd.append(h2);
+    let resetBtn=null;
+    if(sortable){
+      const tools=document.createElement('div');tools.className='stage-tools';
+      resetBtn=document.createElement('button');
+      resetBtn.type='button';
+      resetBtn.className='btn ghost sm hide';
+      resetBtn.textContent='↺ Сбросить порядок';
+      resetBtn.onclick=()=>resetSectionOrder(sectionKey,ordered.map(x=>x.id),defaultIds);
+      tools.append(resetBtn);
+      hd.append(tools);
+    }
+    app.append(hd);
+    const grid=document.createElement('div');grid.className='topics';
+    ordered.forEach(t=>grid.append(topicCard(t,t.subjectSlug||fallbackSubj,hiddenTb,hiddenTr,sortable)));
+    app.append(grid);
+    if(sortable)enableSortableGrid(grid,sectionKey,defaultIds,resetBtn);
+  }
+
+  const mappedIds=new Set();
+  keys.forEach(sk=>{
+    const sObj=subjs[sk];if(!sObj)return;
+    const sh=document.createElement('div');
+    sh.innerHTML='<h2 style="margin:26px 0 4px;font-size:23px">'+esc(sObj.icon||'')+' '+esc(sObj.title)+' <span class="sm mut">(максимум '+esc(sObj.max_score)+' перв. б.)</span></h2>';
+    app.append(sh);
+    (sObj.stages||[]).forEach(stage=>{
+      const items=stage.topics||[];
+      items.forEach(t=>mappedIds.add(t.id));
+      renderSection(stage.stage,items,sk+'::'+stage.stage,sk);
+    });
+  });
+
+  // Дополнительные готовые темы, не вошедшие в стандартную карту
+  const extraTb=activeTb.filter(t=>!mappedIds.has(t.id)&&(SUBJ==='all'||t.subjectSlug===SUBJ));
+  if(extraTb.length){
+    const extraItems=extraTb.map(t=>({id:t.id,title:t.title,codes:t.scope||[],kim:[],prereqs:[],subjectSlug:t.subjectSlug}));
+    renderSection('Дополнительные темы',extraItems,'extra','chemistry');
+  }
+}
+
+applyTheme();
+render();
+})();
+</script>
+</body>
+</html>

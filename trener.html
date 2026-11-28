@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.json">
+<title>Тренажёр ЕГЭ-100</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1c1e23;--mut:#6b6f78;--line:#e4e0d7;--acc:#2f5bd3;--accs:#e7edfb;--ok:#1d8a4b;--oks:#e2f4e9;--bad:#c33a2c;--bads:#fbe6e3;--warn:#a8701a;--warns:#fbf0d9;--red:#d4332a;--sh:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.04)}
+:root[data-theme=dark]{--bg:#0f1621;--card:#172130;--ink:#e7edf5;--mut:#95a4b8;--line:#29394d;--acc:#5ea1ff;--accs:#1c2d47;--ok:#4cc27e;--oks:#163125;--bad:#ff7d6d;--bads:#381f22;--warn:#e6b04e;--warns:#342915;--red:#ff6b61;--sh:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){--bg:#0f1621;--card:#172130;--ink:#e7edf5;--mut:#95a4b8;--line:#29394d;--acc:#5ea1ff;--accs:#1c2d47;--ok:#4cc27e;--oks:#163125;--bad:#ff7d6d;--bads:#381f22;--warn:#e6b04e;--warns:#342915;--red:#ff6b61;--sh:none}}
+:root[data-theme=paper]{--bg:#eae1cf;--card:#f6efe1;--ink:#2a231b;--mut:#625648;--line:#d6c8b0;--acc:#24529a;--accs:#e3e9f0;--ok:#1f6d3d;--oks:#e1ece2;--bad:#a82039;--bads:#f3dfdf;--warn:#9c4a08;--warns:#f3e5cb;--red:#b02a2a;--sh:0 2px 10px rgba(58,42,22,.06)}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button,select,input,textarea{font:inherit;color:inherit}button{cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.hw{max-width:900px;margin:0 auto;padding:10px 16px 4px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:800;font-size:18px;margin-right:auto;white-space:nowrap;display:flex;align-items:center;gap:10px}.brand span{color:var(--acc)}
+.portal-lnk{font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--line);background:var(--card);padding:4px 10px;border-radius:9px;color:var(--ink)}
+.portal-lnk:hover{border-color:var(--acc);color:var(--acc)}
+#sel{max-width:min(380px,66vw)}
+select,.bs{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:14px}
+nav{max-width:900px;margin:0 auto;padding:4px 16px 8px;display:flex;gap:4px;overflow-x:auto}
+nav button{border:0;background:none;padding:6px 13px;border-radius:999px;color:var(--mut);white-space:nowrap;font-size:15px}
+nav button.on{background:var(--accs);color:var(--acc);font-weight:600}
+main{max-width:900px;margin:0 auto;padding:16px 16px 90px}
+h1{font-size:23px;margin:4px 0 6px;line-height:1.25}h2{font-size:18px;margin:22px 0 10px}h3{font-size:16px;margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--sh);margin-bottom:14px}
+.mut{color:var(--mut)}.sm{font-size:14px}.xs{font-size:12.5px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.topic-row{padding:12px 0;border-top:1px solid var(--line)}.topic-name{flex:1 1 220px;min-width:0;overflow-wrap:anywhere}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 16px;font-weight:600}
+.btn:hover{border-color:var(--acc)}.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.sm{padding:6px 12px;font-size:14px}.btn.bad{border-color:var(--bad);color:var(--bad)}.btn[disabled]{opacity:.45;cursor:default}
+.lnk{border:0;background:none;color:var(--acc);padding:0;font-weight:600;font-size:14px}
+a{color:var(--acc)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-size:14px}
+.chip.on{background:var(--accs);border-color:var(--acc);color:var(--acc);font-weight:600}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.tile b{display:block;font-size:22px;line-height:1.2}.tile.red b{color:var(--red)}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-weight:600}
+.bar{height:8px;border-radius:5px;background:var(--line);overflow:hidden;display:flex;min-width:60px}.bar i{display:block;height:100%}
+.tag{display:inline-block;font-size:12px;border-radius:999px;padding:1px 8px;background:var(--accs);color:var(--acc);font-weight:600;margin-right:4px;white-space:nowrap}
+.tag.g{background:var(--oks);color:var(--ok)}.tag.r{background:var(--bads);color:var(--bad)}.tag.y{background:var(--warns);color:var(--warn)}.tag.n{background:var(--line);color:var(--mut)}
+.stage{font-size:13px;color:var(--mut);margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.q{font-size:17px;margin:0 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px}
+.opt:hover:not([disabled]){border-color:var(--acc)}.opt .nm{min-width:22px;font-weight:700;color:var(--mut)}
+.opt.on{border-color:var(--acc);background:var(--accs)}.opt.ok{border-color:var(--ok);background:var(--oks)}.opt.bad{border-color:var(--bad);background:var(--bads)}
+.opt[disabled]{cursor:default}
+.digits{font-family:ui-monospace,Consolas,monospace;font-size:18px;letter-spacing:3px;border:1px dashed var(--line);border-radius:8px;padding:4px 10px;min-width:90px;display:inline-block}
+.answer-entry{width:180px;max-width:100%;background:var(--bg);color:var(--ink)}
+.inp{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;width:100%;max-width:520px}
+textarea.inp{min-height:110px;max-width:none}
+.eqline{font-size:18px;line-height:2.3}
+.conf{margin-top:14px;padding:12px;border-radius:12px;background:var(--accs)}
+.conf .row button{flex:1;min-width:110px}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;border:1px solid var(--line)}
+.fb.ok{background:var(--oks);border-color:var(--ok)}.fb.bad{background:var(--bads);border-color:var(--bad)}.fb.part{background:var(--warns);border-color:var(--warn)}
+.fb .hd{font-weight:700;margin-bottom:4px}
+.why{margin-top:8px}.wn{margin-top:6px;padding-left:10px;border-left:3px solid var(--bad)}
+.kon{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-size:14.5px}
+.kon .t{font-weight:700;margin-bottom:4px}
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}@media(max-width:560px){.cases{grid-template-columns:1fr}}
+.case{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}.case b{display:block;margin-bottom:4px}
+.steps{display:flex;flex-direction:column;gap:6px;margin:6px 0}
+.step{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--bg);text-align:left;width:100%}
+button.step:hover:not([disabled]){border-color:var(--acc)}.step.on{border-color:var(--acc);background:var(--accs)}.step.ok{border-color:var(--ok);background:var(--oks)}.step.bad{border-color:var(--bad);background:var(--bads)}
+.bl{display:inline-block;border-bottom:2px solid var(--acc);padding:0 3px;font-weight:600;color:var(--acc)}
+.bl.ok{border-color:var(--ok);color:var(--ok)}.bl.bad{border-color:var(--bad);color:var(--bad)}
+.step select,.step input{border:1px solid var(--acc);background:var(--card);border-radius:7px;padding:2px 6px;font-size:15px}
+.step input{width:9em}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:600px){.mt{grid-template-columns:1fr}}
+.mrow{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin:4px 0}.mrow .lt{font-weight:700;min-width:22px}
+.nb{width:32px;height:32px;border:1px solid var(--line);background:var(--card);border-radius:8px;font-weight:600}
+.nb.on{background:var(--acc);border-color:var(--acc);color:#fff}.nb.ok{background:var(--ok);border-color:var(--ok);color:#fff}.nb.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.kb{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.kb button{border:1px solid var(--line);background:var(--card);border-radius:7px;padding:3px 9px;font-size:16px;min-width:36px;min-height:34px}.kb .tgl.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.prin{border-left:4px solid var(--acc);padding:2px 0 2px 12px;margin:12px 0}.prin .n{font-weight:700}
+.figw{position:relative;width:fit-content;max-width:100%;margin:0 auto 10px}.figw img{display:block;max-width:100%;max-height:420px;border-radius:10px;background:#fff}
+.hdm{position:absolute;background:#fff;border-radius:3px;pointer-events:none}.mk{position:absolute;transform:translate(-50%,-50%);min-width:24px;height:24px;padding:0 5px;border-radius:12px;background:#d4332a;color:#fff;font:700 13px/24px system-ui,sans-serif;text-align:center;box-shadow:0 0 0 2px #fff;pointer-events:none}
+.pts label{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+.prog{height:4px;background:var(--line);border-radius:3px;margin-bottom:12px;overflow:hidden}.prog i{display:block;height:100%;background:var(--acc)}
+details summary{cursor:pointer;font-weight:600}
+.empty{text-align:center;padding:40px 18px}
+sub,sup{font-size:.72em;line-height:0}
+.hide{display:none!important}
+/* Русский язык: ударение кликом, орфография и пунктуация кликом */
+.stress-word{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px;font-size:24px;font-weight:600;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
+.vbtn{border:1px solid var(--acc);background:var(--accs);color:var(--acc);border-radius:8px;padding:2px 8px;font-weight:700;font-size:22px;line-height:1.2;margin:0 1px}
+.vbtn.on{background:var(--acc);color:#fff}.vbtn.ok{background:var(--ok);border-color:var(--ok);color:#fff}.vbtn.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.ru-stress{color:var(--bad);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.ru-ortho{background:var(--warns);border:1px solid var(--warn);border-radius:5px;padding:0 3px;font-weight:700}
+.ru-pos{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:var(--accs);border:1px solid var(--acc);color:var(--acc);font-size:13px;font-weight:700;margin:0 2px}
+.punct-sent{font-size:18px;line-height:2;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
+.pbtn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:2px 9px;font-size:14px;font-weight:700;margin:0 3px;vertical-align:middle}
+.pbtn.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.pbtn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.pbtn.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.ortho-word{font-size:22px;font-weight:700;padding:10px 14px;background:var(--bg);border:1px solid var(--line);border-radius:12px;display:inline-block;margin-bottom:10px}
+.ortho-word .gap{color:var(--acc);border-bottom:2px solid var(--acc);padding:0 4px}
+</style>
+</head>
+<body>
+<header>
+  <div class="hw">
+    <div class="brand"><a href="index.html" class="portal-lnk">← Портал</a><div>Тренажёр <span>ЕГЭ-100</span></div></div>
+    <select id="sel" aria-label="Учебная тема"></select>
+    <button id="sync" class="bs" type="button" title="Синхронизировать прогресс и тренажёры с ПК">🔄</button>
+    <button id="theme" class="bs" type="button" title="Тема оформления">◐</button>
+  </div>
+  <nav id="tabs"></nav>
+</header>
+<main id="app"></main>
+<script src="sync-client.js"></script>
+<script>
+(function(){
+"use strict";
+const TOPICS_DIR='topics/';
+const THEME_KEY='ege100-theme';
+const $=(s,r=document)=>r.querySelector(s);
+function h(tag,a,...kids){const e=document.createElement(tag);if(a)for(const k in a){const v=a[k];if(v==null||v===false)continue;
+  if(k==='class')e.className=v;else if(k==='html')e.innerHTML=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v===true?'':v);}
+  for(const c of kids.flat(9)){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let CHEM=false, RUS=false;
+function fmt(s){
+  s=esc(s==null?'':s);
+  s=s.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,'$2').replace(/\[\[([^\]]+)\]\]/g,'$1');
+  if(CHEM)s=s.replace(/([A-Za-z\)\]])(\d+)/g,'$1<sub>$2</sub>');
+  s=s.replace(/\^\{([^}]*)\}/g,'<sup>$1</sup>').replace(/_\{([^}]*)\}/g,'<sub>$1</sub>');
+  s=s.replace(/\{~([^}]+)\}/g,'<span class="ru-stress">$1\u0301</span>');
+  s=s.replace(/\{!:([^}]*)\}/g,'<span class="ru-ortho">$1</span>');
+  s=s.replace(/\{\((\d+)\)\}/g,'<span class="ru-pos">$1</span>');
+  s=s.replace(/\{(?:п|к|с|о|подл|сказ|опр|обст|ввод):([^}]+)\}/g,'$1');
+  s=s.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/(^|[\s(«])\*(\S[^*\n]*?)\*/g,'$1<i>$2</i>');
+  return s.replace(/\n/g,'<br>');
+}
+const F=(s,tag='span',cls)=>h(tag,{class:cls,html:fmt(s)});
+const SUPC={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻','−':'⁻'};
+function uni(s){
+  s=String(s==null?'':s).replace(/\*\*/g,'').replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,'$2').replace(/\[\[([^\]]+)\]\]/g,'$1');
+  s=s.replace(/\{~([^}]+)\}/g,'$1').replace(/\{!:([^}]*)\}/g,'$1').replace(/\{\((\d+)\)\}/g,'($1)').replace(/\{(?:п|к|с|о|подл|сказ|опр|обст|ввод):([^}]+)\}/g,'$1');
+  if(CHEM)s=s.replace(/([A-Za-z\)\]])(\d+)/g,(m,a,d)=>a+[...d].map(c=>'₀₁₂₃₄₅₆₇₈₉'[c]).join(''));
+  return s.replace(/\^\{([^}]*)\}/g,(m,x)=>[...x].map(c=>SUPC[c]||c).join('')).replace(/_\{([^}]*)\}/g,'$1');
+}
+const plain=s=>uni(s).replace(/<[^>]+>/g,'');
+const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+const uniq=a=>[...new Set(a)];
+const DAY=864e5, now=()=>Date.now();
+const dkey=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}},del(k){try{localStorage.removeItem(k);}catch(e){}},keys(){try{return Object.keys(localStorage);}catch(e){return [];}}};
+function plur(n,a,b,c){n=Math.abs(Math.round(n));const m10=n%10,m100=n%100;return m10===1&&m100!==11?a:(m10>=2&&m10<=4&&(m100<10||m100>=20)?b:c);}
+const pct=x=>Math.round(x*100)+'%';
+const LET='АБВГДЕЖЗ';
+function num(x,dp){if(typeof x!=='number')return String(x);const d=dp==null?(Number.isInteger(x)?0:2):dp;return String(Number(x.toFixed(d))).replace('.',',');}
+const inDays=ms=>{const d=Math.round(ms/DAY);return d<=0?'сегодня':d===1?'завтра':'через '+d+' '+plur(d,'день','дня','дней');};
+
+/* ===================== химия ===================== */
+const SUBN={'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+const SUPM={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','⁹':'⁹','+':'⁺','-':'⁻','−':'⁻',
+  A:'ᴬ',B:'ᴮ',D:'ᴰ',E:'ᴱ',G:'ᴳ',H:'ᴴ',I:'ᴵ',J:'ᴶ',K:'ᴷ',L:'ᴸ',M:'ᴹ',N:'ᴺ',O:'ᴼ',P:'ᴾ',R:'ᴿ',T:'ᵀ',U:'ᵁ',W:'ᵂ',
+  a:'ᵃ',b:'ᵇ',c:'ᶜ',d:'ᵈ',e:'ᵉ',f:'ᶠ',g:'ᵍ',h:'ʰ',i:'ⁱ',j:'ʲ',k:'ᵏ',l:'ˡ',m:'ᵐ',n:'ⁿ',o:'ᵒ',p:'ᵖ',r:'ʳ',s:'ˢ',t:'ᵗ',u:'ᵘ',v:'ᵛ',w:'ʷ',x:'ˣ',y:'ʸ',z:'ᶻ'};
+const SUPN={};for(const k in SUPM)if(k!=='−')SUPN[SUPM[k]]=k;
+const SUPRE=new RegExp('['+Object.keys(SUPN).join('')+']+','g');
+const toMk=s=>String(s==null?'':s).replace(SUPRE,m=>'^{'+[...m].map(c=>SUPN[c]).join('')+'}').replace(/[₀-₉]/g,c=>SUBN[c]).replace(/->/g,'→').replace(/⟶/g,'→');
+function normF(s){s=String(s==null?'':s).replace(/\*\*/g,'');s=toMk(s);s=s.replace(/[−–—]/g,'-').replace(/<sub>(.*?)<\/sub>/g,'$1').replace(/<sup>(.*?)<\/sup>/g,'^{$1}');s=s.replace(/->|⟶|=|⇄|⇌/g,'→').replace(/[↑↓\s]/g,'').replace(/ē/g,'e^{-}').replace(/\^\{1([+-])\}/g,'^{$1}');return s;}
+function atoms(f){const st=[{}];let i=0;f=String(f).replace(/\^\{[^}]*\}/g,'');
+  while(i<f.length){const c=f[i];if(c==='('||c==='['){st.push({});i++;continue;}
+    if(c===')'||c===']'){i++;const m=f.slice(i).match(/^\d+/);const k=m?+m[0]:1;if(m)i+=m[0].length;const g=st.pop();if(!st.length)return null;for(const e in g)st[st.length-1][e]=(st[st.length-1][e]||0)+g[e]*k;continue;}
+    if(c==='·'||c==='*'){const m=f.slice(i+1).match(/^\d+/);const k=m?+m[0]:1;i+=1+(m?m[0].length:0);const rest=atoms(f.slice(i));if(!rest)return null;for(const e in rest)st[0][e]=(st[0][e]||0)+rest[e]*k;i=f.length;continue;}
+    const m=f.slice(i).match(/^([A-Z][a-z]?)(\d*)/);if(!m)return null;st[st.length-1][m[1]]=(st[st.length-1][m[1]]||0)+(m[2]?+m[2]:1);i+=m[0].length;}
+  return st.length===1?st[0]:null;}
+function charge(f){const m=String(f).match(/\^\{(\d*)([+\-−])\}$/);if(!m)return 0;return (m[1]?+m[1]:1)*(m[2]==='+'?1:-1);}
+const isE=f=>/^(e|ē)(\^\{[−-]\})?$/.test(f);
+function sideCount(fs,cs){const A={};let q=0;for(let i=0;i<fs.length;i++){const k=cs[i];if(isE(fs[i])){q-=k;continue;}const a=atoms(fs[i]);if(!a)return null;for(const e in a)A[e]=(A[e]||0)+a[e]*k;q+=charge(fs[i])*k;}return {A,q};}
+function balanceDiff(L,Rr,c){const a=sideCount(L,c.slice(0,L.length)),b=sideCount(Rr,c.slice(L.length));if(!a||!b)return null;
+  const out=[];uniq(Object.keys(a.A).concat(Object.keys(b.A))).sort().forEach(e=>{if((a.A[e]||0)!==(b.A[e]||0))out.push(e+': слева '+(a.A[e]||0)+', справа '+(b.A[e]||0));});
+  if(a.q!==b.q)out.push('заряд: слева '+a.q+', справа '+b.q);return out;}
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function eqStr(L,Rr,c,cond){const s=(fs,cs)=>fs.map((f,i)=>(cs&&cs[i]>1?cs[i]:'')+f).join(' + ');return s(L,c?c.slice(0,L.length):null)+(cond?' —'+cond+'→ ':' → ')+s(Rr,c?c.slice(L.length):null);}
+function eqParse(raw){let s=String(raw||'').replace(/\([^()]*[А-Яа-яЁё°][^()]*\)/g,'').replace(/—[^→]*→/g,'→');s=normF(s);
+  const p=s.split('→');if(p.length!==2||!p[0]||!p[1])return null;const S=[{},{}];
+  for(let side=0;side<2;side++){const terms=[];let cur='',d=0,sign=1;
+    for(const ch of p[side]){if(ch==='{')d++;if(ch==='}')d--;if((ch==='+'||ch==='-')&&d===0){if(cur)terms.push([sign,cur]);cur='';sign=ch==='-'?-1:1;continue;}cur+=ch;}
+    if(cur)terms.push([sign,cur]);if(!terms.length)return null;
+    for(const [sg,x] of terms){const m=x.match(/^(\d*)(\D.*)$/);if(!m)return null;const k=m[1]?+m[1]:1;let f=m[2];if(/^e(\^\{-\})?$/.test(f))f='e^{-}';
+      if(sg<0&&f!=='e^{-}')return null;const sd=sg<0?1-side:side;S[sd][f]=(S[sd][f]||0)+k;}}
+  return S;}
+const rxMap=r=>{const A=[{},{}];r.l.forEach((f,i)=>A[0][normF(f)]=r.c[i]);r.r.forEach((f,i)=>A[1][normF(f)]=r.c[r.l.length+i]);return A;};
+function gradeEq(R,ans,answers,bad){const S=eqParse(ans);
+  if(!S){R.msg.push(['Не получилось прочитать уравнение.','Нужна стрелка → (или =), вещества через +, заряды — верхним индексом (x² или ⁺ ⁻).']);return;}
+  const keys=o=>Object.keys(o).sort().join('|');const A=answers.find(a=>keys(a[0])===keys(S[0])&&keys(a[1])===keys(S[1]))||answers[0];
+  const miss=(X,Y)=>Object.keys(Y).filter(f=>!(f in X));
+  const lm=miss(S[0],A[0]),le=miss(A[0],S[0]),rm=miss(S[1],A[1]),re=miss(A[1],S[1]);
+  if(lm.length||le.length)R.msg.push(['Не те исходные вещества.',(lm.length?'Не хватает: '+lm.join(', ')+'. ':'')+(le.length?'Лишнее слева: '+le.join(', ')+'.':'')]);
+  re.forEach(f=>{const b=(bad||[]).find(y=>normF(badF(y))===f);R.msg.push(['Лишний продукт: '+f+'.',b?badW(b):'В этой реакции он не образуется.']);});
+  rm.forEach(f=>R.msg.push(['Не хватает продукта: '+f+'.','']));if(R.msg.length)return;
+  const ks=[...Object.keys(A[0]).map(f=>[0,f]),...Object.keys(A[1]).map(f=>[1,f])],sv=ks.map(([d,f])=>S[d][f]),av=ks.map(([d,f])=>A[d][f]);
+  if(sv.every((x,i)=>x===av[i])){R.ok=true;return;}
+  R.part=0.5;const k=sv[0]/av[0];
+  if(sv.every((x,i)=>Math.abs(x-av[i]*k)<1e-9))R.msg.push(['Вещества верные, но коэффициенты не наименьшие.','Раздели все коэффициенты на '+sv.reduce(gcd)+'.']);
+  else{const L=Object.keys(A[0]),Rr=Object.keys(A[1]),diff=balanceDiff(L,Rr,L.map(f=>S[0][f]).concat(Rr.map(f=>S[1][f])));
+    if(diff&&diff.length)R.msg.push(['Вещества верные, но уравнение не уравнено:',diff.join('; ')]);
+    else R.msg.push(['По атомам сходится, но не так, как в эталоне.','Проверь электронный баланс.']);}}
+
+/* ===================== расчёты ===================== */
+const MATHF={round:Math.round,sqrt:Math.sqrt,pow:Math.pow,floor:Math.floor,ceil:Math.ceil,min:Math.min,max:Math.max,abs:Math.abs,log:Math.log,log10:Math.log10,exp:Math.exp};
+function calcEval(expr,env){if(/[^\w\s.+\-*/(),^<>=&|!]/.test(expr))throw new Error('символы');
+  const names=Object.keys(env),fn=Object.keys(MATHF);
+  return Function(...names,...fn,'"use strict";return ('+expr.replace(/\^/g,'**')+');')(...names.map(k=>env[k]),...fn.map(k=>MATHF[k]));}
+function calcEnv(c){const env={},v=c.v||{};if(v._)Object.assign(env,pick(v._));
+  for(const k in v){if(k==='_')continue;const r=v[k];
+    if(Array.isArray(r)&&r.length===3&&r.every(x=>typeof x==='number')){const n=Math.floor((r[1]-r[0])/r[2]+1e-9)+1;env[k]=Number((r[0]+r[2]*rnd(n)).toFixed(6));}
+    else if(Array.isArray(r))env[k]=pick(r);else env[k]=r;}return env;}
+function calcFill(s,env){return String(s||'').replace(/\{([^{}]+)\}/g,(m,e)=>{if(e[0]==='='){const [b,dp]=e.slice(1).split('|');try{return num(calcEval(b,env),dp!=null?+dp:undefined);}catch(x){return m;}}
+  return e in env?num(env[e]):m;});}
+
+/* ===================== загрузка тем ===================== */
+let CATALOG=[],LIST=[],META_BY_ID={},REMOVED=new Set(),OPEN=0,P=null,ST=null,VIEW='today',RUN=null;const CACHE={};
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src+'?v='+Date.now();s.onload=()=>{s.remove();res();};s.onerror=()=>{s.remove();rej(new Error('не найден файл '+src));};document.head.append(s);});}
+async function loadList(){try{await loadScript(TOPICS_DIR+'catalog.js');}catch(e){}
+  const raw=(window.EGE100_CATALOG&&window.EGE100_CATALOG.trainers)||[];
+  CATALOG=raw.filter(x=>x&&x.id&&x.file);
+  META_BY_ID={};CATALOG.forEach(x=>META_BY_ID[x.id]=x);
+  const removed=LS.get('tr-removed-packs',[]);REMOVED=new Set(Array.isArray(removed)?removed.filter(x=>typeof x==='string'):[]);refreshList();}
+function refreshList(){LIST=CATALOG.filter(x=>!REMOVED.has(x.id));}
+async function removePack(id){const m=LIST.find(x=>x.id===id);if(!m)return;
+  if(!confirm('Скрыть тренажёр «'+m.title+'» в этом браузере? Прогресс сохранится.'))return;
+  const removed=new Set(REMOVED);removed.add(id);LS.set('tr-removed-packs',[...removed]);
+  const current=P&&P.id;leaveRun();KEYS=null;REMOVED=removed;refreshList();await openPack(current);}
+async function restorePack(id){if(!CATALOG.some(x=>x.id===id)||!REMOVED.has(id))return;
+  const removed=new Set(REMOVED);removed.delete(id);LS.set('tr-removed-packs',[...removed]);
+  REMOVED=removed;refreshList();if(P){fillSel();render();}else await openPack(id);}
+async function loadPack(id){if(CACHE[id])return CACHE[id];const m=LIST.find(x=>x.id===id);if(!m)throw new Error('темы нет в списке');
+  await loadScript(TOPICS_DIR+m.file);const p=(window.TRENER_PACKS||{})[id];if(!p)throw new Error('в файле '+m.file+' нет темы '+id);p._meta=m;CACHE[id]=prep(p);return CACHE[id];}
+const freshState=()=>({sk:{},facts:{},red:[],fade:{},learned:{},cal:{sure:[0,0],maybe:[0,0],guess:[0,0]},log:[],days:{}});
+let _syncTimer=null;
+const GH=window.EGE100Sync;
+async function syncWithCloud(opts){
+  const {reload=false,silent=false}=opts||{};
+  if(!GH)return false;
+  const btn=$('#sync');
+  if(btn&&!silent){btn.disabled=true;btn.textContent='⏳';}
+  try{
+    const res=await GH.syncAll({updateContent:reload,swPath:'./sw.js'});
+    if(!res.ok)throw new Error(res.errors.join('; ')||'sync failed');
+    if(reload){
+      for(const k in CACHE)delete CACHE[k];
+      await loadList();fillSel();
+      const curId=P&&P.id;
+      if(LIST.length)await openPack(curId||LS.get('tr-pack',null));else render();
+    }else if(P){
+      ST=Object.assign(freshState(),LS.get('tr-state-'+P.id,{}));
+    }
+    if(btn&&!silent){btn.disabled=false;btn.textContent='✓';setTimeout(()=>btn.textContent='🔄',1800);}
+    return true;
+  }catch(e){
+    if(btn&&!silent){
+      btn.disabled=false;btn.textContent='✕';setTimeout(()=>btn.textContent='🔄',2200);
+      alert('Синхронизация не удалась: '+(e&&e.message?e.message:e));
+    }
+    return false;
+  }
+}
+function scheduleSync(){if(!GH||!GH.isConfigured())return;clearTimeout(_syncTimer);_syncTimer=setTimeout(()=>syncWithCloud({reload:false,silent:true}),2000);}
+const save=()=>{if(P&&ST){LS.set('tr-state-'+P.id,ST);scheduleSync();}};
+async function openPack(id){const a=$('#app'),request=++OPEN;
+  if(!LIST.length){P=null;ST=null;RUN=null;KEYS=null;LS.del('tr-pack');fillSel();render();return;}
+  id=LIST.some(x=>x.id===id)?id:LIST[0].id;
+  a.innerHTML='';a.append(h('div',{class:'card mut'},'Открываю тему…'));
+  try{const p=await loadPack(id);if(request!==OPEN)return;P=p;}catch(e){if(request!==OPEN)return;P=null;ST=null;RUN=null;KEYS=null;fillSel();tabs();a.innerHTML='';a.append(h('div',{class:'card'},h('h3',{},'Не удалось открыть тему'),h('p',{class:'mut'},String(e.message)),h('button',{class:'btn sm',onclick:()=>{VIEW='topics';render();}},'Управление темами')));return;}
+  CHEM=/хим/i.test(P.subject);RUS=/рус/i.test(P.subject);
+  ST=Object.assign(freshState(),LS.get('tr-state-'+P.id,{}));LS.set('tr-pack',P.id);RUN=null;fillSel();if(VIEW==='run')VIEW='today';render();}
+function fillSel(){const s=$('#sel');s.innerHTML='';s.disabled=!LIST.length;
+  if(!LIST.length){s.append(h('option',{},'Тем пока нет'));return;}
+  const subj=uniq(LIST.map(x=>x.subject));
+  subj.forEach(sb=>{const g=h('optgroup',{label:sb});LIST.filter(x=>x.subject===sb).forEach(x=>g.append(h('option',{value:x.id,selected:P&&P.id===x.id},x.title)));s.append(g);});}
+
+/* ===================== генераторы и факты ===================== */
+function prep(p){
+  CHEM=/хим/i.test(p.subject);RUS=/рус/i.test(p.subject);
+  p.SK={};p.skills.forEach(s=>p.SK[s.id]=s);
+  const G=[],FX={};p.G=G;p.FX=FX;
+  const fact=(id,o)=>{FX[id]=Object.assign(FX[id]||{gens:[]},o);return id;};
+  const addG=(g,fids)=>{G.push(g);(fids||[]).forEach(f=>FX[f]&&FX[f].gens.push(g));return g;};
+  (p.tab||[]).forEach(t=>t.cols.forEach((c,j)=>{
+    const fid=r=>'t:'+t.id+':'+j+':'+r[0];
+    t.rows.forEach(r=>fact(fid(r),{label:r[0]+' → '+c.t+': '+r[j+1],ref:t.ref,sk:c.sk}));
+    const base={sk:c.sk,n:c.n||t.n,ref:t.ref,src:t.t+' · '+c.t},fids=t.rows.map(fid);
+    addG(Object.assign({id:'t1:'+t.id+':'+j,fmt:'one',make:tg=>tabOne(t,j,tg)},base),fids);
+    if(c.m)addG(Object.assign({id:'tm:'+t.id+':'+j,fmt:'match',make:tg=>tabMatch(t,j,tg)},base),fids);
+    if(c.mq)addG(Object.assign({id:'tk:'+t.id+':'+j,fmt:'multi',make:tg=>tabMulti(t,j,tg)},base),fids);
+  }));
+  (p.rx||[]).forEach(r=>{const f=fact('r:'+r.id,{label:eqStr(r.l,r.r,r.c,r.if?'':null)+(r.if?' ('+r.if+')':''),ref:r.ref,sk:r.sk});
+    const base={sk:r.sk,n:r.n,ref:r.ref,cross:r.cross,src:'реакции'};
+    addG(Object.assign({id:'rw:'+r.id,fmt:'rx',write:true,make:()=>rxWrite(r)},base),[f]);
+    if(r.only==='coef'||r.half)return;
+    addG(Object.assign({id:'rp:'+r.id,fmt:'one',make:()=>rxProd(r)},base),[f]);
+    if(r.ox!=null)addG(Object.assign({id:'ro:'+r.id,fmt:'one',make:()=>rxOx(r)},base),[f]);});
+  (p.seq||[]).forEach(s=>{const f=fact('s:'+s.id,{label:s.q,ref:s.ref,sk:s.sk});addG({id:'sq:'+s.id,fmt:'seq',sk:s.sk,n:s.n,ref:s.ref,src:'последовательность',make:()=>seqItem(s)},[f]);});
+  (p.facts||[]).forEach(fs=>{const fids=fs.s.map((x,i)=>fact('f:'+fs.id+':'+i,{label:x[0],ref:x[3]||fs.ref,sk:fs.sk}));
+    const base={sk:fs.sk,n:fs.n,ref:fs.ref,src:fs.t||'утверждения'};
+    addG(Object.assign({id:'fm:'+fs.id,fmt:'multi',make:tg=>factMulti(fs,tg)},base),fids);
+    if(fs.s.length>=5)addG(Object.assign({id:'fe:'+fs.id,fmt:'err',make:tg=>factErr(fs,tg)},base),fids);});
+  (p.calc||[]).forEach(c=>{const f=fact('c:'+c.id,{label:plain(c.q).slice(0,90),ref:c.ref,sk:c.sk});addG({id:'cn:'+c.id,fmt:'num',sk:c.sk,n:c.n,ref:c.ref,cross:c.cross,src:'расчёт',make:()=>calcItem(c)},[f]);});
+  (p.stress||[]).forEach(sb=>{const fids=(sb.words||[]).map((w,i)=>fact('st:'+sb.id+':'+i,{label:plain(w.stressed),ref:sb.ref,sk:sb.sk}));
+    const base={sk:sb.sk,n:sb.n||4,ref:sb.ref,src:'ударения'};
+    addG(Object.assign({id:'sw:'+sb.id,fmt:'stress',make:tg=>stressClickItem(sb,tg)},base),fids);
+    if((sb.words||[]).length>=5)addG(Object.assign({id:'sm:'+sb.id,fmt:'multi',make:tg=>stressMultiItem(sb,tg)},base),fids);});
+  (p.ortho||[]).forEach(ob=>{const fids=(ob.items||[]).map((it,i)=>fact('or:'+ob.id+':'+i,{label:it.tpl.replace('_',it.a),ref:ob.ref,sk:ob.sk}));
+    const base={sk:ob.sk,n:ob.n,ref:ob.ref,src:'орфография'};
+    addG(Object.assign({id:'ow:'+ob.id,fmt:'ortho',make:tg=>orthoWordItem(ob,tg)},base),fids);
+    if((ob.items||[]).length>=8)addG(Object.assign({id:'or:'+ob.id,fmt:'multi',make:tg=>orthoRowsItem(ob,tg)},base),fids);});
+  (p.punct||[]).forEach(pb=>{const f=fact('pu:'+pb.id,{label:plain(pb.text).slice(0,85),ref:pb.ref,sk:pb.sk});
+    addG({id:'pu:'+pb.id,fmt:'punct',sk:pb.sk,n:pb.n,ref:pb.ref,src:'пунктуация',make:()=>punctItem(pb)},[f]);});
+  (p._fig||[]).filter(g=>g.gen).forEach(g=>{const fids=g.marks.map(m=>fact('g:'+g.id+':'+m[0],{label:g.t+': '+m[0]+' — '+m[1],ref:g.ref,sk:g.sk}));
+    const base={sk:g.sk,ref:g.ref,n:g.n,src:'рисунок: '+g.t};
+    addG(Object.assign({id:'gl:'+g.id,fmt:'one',make:tg=>figItem(g,tg,0)},base),fids);
+    addG(Object.assign({id:'gr:'+g.id,fmt:'one',make:tg=>figItem(g,tg,2)},base),fids);
+    const wf=g.marks.filter(m=>m[2]);
+    if(wf.length>=3)addG(Object.assign({id:'gf:'+g.id,fmt:'one',make:tg=>figItem(g,tg,1)},base),fids.filter((f,i)=>g.marks[i][2]));
+    if(wf.length>=3)addG(Object.assign({id:'gm:'+g.id,fmt:'match',make:tg=>figMatch(g,tg)},base,{n:g.nm||g.n}),fids.filter((f,i)=>g.marks[i][2]));});
+  (p.tasks||[]).forEach(t=>addG({id:'task:'+t.id,task:true,fmt:FMTOF[t.type||'one'],sk:t.sk,n:t.n,ref:t.ref,cross:t.cross,src:t.src==='user'?'задание из твоих материалов':'задание формата ЕГЭ',make:()=>taskItem(t)}));
+  return p;}
+const FMTOF={one:'one',multi:'multi',match:'match',seq:'seq',short:'short',num:'num',eqn:'rx',part2:'part2',stress:'stress',ortho:'ortho',punct:'punct'};
+const FMTN={one:'Один ответ',multi:'Несколько верных',match:'Соответствие',seq:'Последовательность',num:'Расчёт',rx:'Запись уравнений',err:'Найди ошибки в тексте',short:'Свой ответ',part2:'Часть 2 — развёрнутый ответ',stress:'Ударение кликом',ortho:'Орфограмма в слове',punct:'Знаки препинания'};
+
+/* ---------- генераторы ---------- */
+const VOWELS='аеёиоуыэюяАЕЁИОУЫЭЮЯ';
+function stressWordParts(stressed){
+  const m=String(stressed).match(/\{~([^}]+)\}/);
+  let raw=String(stressed), vidx=-1;
+  if(m){vidx=m.index;raw=raw.replace(/\{~([^}]+)\}/,'$1');}
+  else{for(let i=0;i<raw.length;i++)if(VOWELS.includes(raw[i])&&raw[i]===raw[i].toUpperCase()&&raw[i]!==raw[i].toLowerCase()){vidx=i;break;}}
+  if(vidx<0)return null;
+  const low=raw.toLowerCase();
+  const vIndices=[];for(let i=0;i<low.length;i++)if(VOWELS.includes(low[i]))vIndices.push(i);
+  if(vIndices.length<2)return null;
+  const marked=low.slice(0,vidx)+low[vidx].toUpperCase()+low.slice(vidx+1);
+  return {low,vidx,vIndices,marked};
+}
+function stressClickItem(sb,tg){
+  const words=sb.words||[];let idx=rnd(words.length);
+  if(tg){const ti=+tg.split(':').pop();if(ti>=0&&ti<words.length)idx=ti;}
+  const w=words[idx], sp=stressWordParts(w.stressed);if(!sp)return null;
+  return {kind:'stress',lvl:sb.lvl||2,key:'sw:'+sb.id+':'+idx,q:'Нажми на ударную гласную в слове:',word:sp.low,vIndices:sp.vIndices,a:sp.vidx,marked:sp.marked,why:w.why||'',facts:['st:'+sb.id+':'+idx]};
+}
+function stressMultiItem(sb,tg){
+  const words=sb.words||[];if(words.length<5)return null;
+  const ids=shuffle(words.map((_,i)=>i)).slice(0,5);
+  const k=pick([2,3]);const yes=new Set(shuffle(ids).slice(0,k));
+  const o=[], d={}, dd={};
+  ids.forEach((wi,j)=>{
+    const w=words[wi], sp=stressWordParts(w.stressed);if(!sp)return;
+    if(yes.has(wi)){o.push(sp.marked);dd[j]=w.why||'Верно: '+sp.marked;}
+    else{const wrongPos=pick(sp.vIndices.filter(v=>v!==sp.vidx));const bad=sp.low.slice(0,wrongPos)+sp.low[wrongPos].toUpperCase()+sp.low.slice(wrongPos+1);o.push(bad);d[j]='Неверно. Правильно: '+sp.marked+(w.why?' ('+w.why+')':'');}
+  });
+  if(o.length<5)return null;
+  return {kind:'multi',lvl:sb.lvl||2,key:'sm:'+sb.id+':'+ids.join(),q:'Укажите варианты ответов, в которых верно выделена буква, обозначающая ударный гласный звук.',o,a:ids.map((wi,j)=>yes.has(wi)?j:-1).filter(j=>j>=0),d,dd,facts:ids.map(i=>'st:'+sb.id+':'+i),of:ids.map(i=>'st:'+sb.id+':'+i)};
+}
+function orthoWordItem(ob,tg){
+  const items=ob.items||[];let idx=rnd(items.length);
+  if(tg){const ti=+tg.split(':').pop();if(ti>=0&&ti<items.length)idx=ti;}
+  const it=items[idx];
+  return {kind:'ortho',lvl:ob.lvl||2,strictYo:true,key:'ow:'+ob.id+':'+idx,q:'Выбери или впиши пропущенную букву:',tpl:it.tpl,opts:it.opts||null,a:it.a,why:it.rule||'',facts:['or:'+ob.id+':'+idx]};
+}
+function orthoRowsItem(ob,tg){
+  const items=ob.items||[];if(items.length<8)return null;
+  const byAns={};items.forEach((it,i)=>(byAns[it.a]=byAns[it.a]||[]).push(i));
+  const goodLetters=Object.keys(byAns).filter(a=>byAns[a].length>=3);
+  const availGroups=goodLetters.reduce((s,l)=>s+Math.floor(byAns[l].length/3),0);
+  if(availGroups<1)return null;
+  const k=Math.min(availGroups>=2?pick([2,3]):1,availGroups);
+  const o=[], a=[], d={}, dd={}, usedIdx=new Set(), allFacts=[];
+  const findDiff=(p)=>{const a1=p[0],a2=p[1],a3=p.find((x,xi)=>xi>1&&!(items[x].a===items[a1].a&&items[x].a===items[a2].a));return(a1!=null&&a2!=null&&a3!=null)?[a1,a2,a3]:null;};
+  for(let r=0;r<5;r++){
+    if(r<k){
+      const avail=goodLetters.filter(l=>byAns[l].filter(i=>!usedIdx.has(i)).length>=3);
+      if(!avail.length)return null;
+      const letKey=pick(avail);
+      const pool=shuffle(byAns[letKey].filter(i=>!usedIdx.has(i)));
+      if(pool.length<3)return null;
+      const pick3=pool.slice(0,3);pick3.forEach(i=>{usedIdx.add(i);allFacts.push('or:'+ob.id+':'+i);});
+      o.push(pick3.map(i=>items[i].tpl.replace('_','..')).join(', '));
+      a.push(r);
+      dd[r]='Во всех словах пишется «'+letKey+'»: '+pick3.map(i=>items[i].tpl.replace('_',items[i].a)).join(', ')+'.';
+    }else{
+      let pick3=findDiff(shuffle(items.map((_,i)=>i).filter(i=>!usedIdx.has(i))));
+      if(!pick3)pick3=findDiff(shuffle(items.map((_,i)=>i)));
+      if(!pick3)return null;
+      pick3.forEach(i=>{usedIdx.add(i);allFacts.push('or:'+ob.id+':'+i);});
+      o.push(pick3.map(i=>items[i].tpl.replace('_','..')).join(', '));
+      d[r]='Буквы разные: '+pick3.map(i=>items[i].tpl.replace('_',items[i].a)+' ('+items[i].a+')').join(', ')+'.';
+    }
+  }
+  const idx=shuffle([0,1,2,3,4]);const mappedO=idx.map(i=>o[i]);const mappedA=idx.map((old,ni)=>a.includes(old)?ni:-1).filter(x=>x>=0);
+  const mappedD={}, mappedDD={};idx.forEach((old,ni)=>{if(d[old])mappedD[ni]=d[old];if(dd[old])mappedDD[ni]=dd[old];});
+  return {kind:'multi',lvl:ob.lvl||2,key:'or:'+ob.id+':'+idx.join(),q:'Укажите варианты ответов, в которых во всех словах одного ряда пропущена одна и та же буква.',o:mappedO,a:mappedA,d:mappedD,dd:mappedDD,facts:uniq(allFacts)};
+}
+function punctItem(pb){
+  const nums=uniq([...String(pb.text).matchAll(/\((\d+)\)/g)].map(m=>+m[1])).sort((a,b)=>a-b);
+  return {kind:'punct',lvl:pb.lvl||2,key:'pu:'+pb.id,q:'Укажите цифру(-ы), на месте которой(-ых) должна(-ы) стоять запятая(-ые):',text:pb.text,nums,a:pb.a.slice().sort((x,y)=>x-y),pwhy:pb.why||{},why:pb.ex||'',facts:['pu:'+pb.id]};
+}
+
+function tabOne(t,j,tg){const c=t.cols[j],fid=r=>'t:'+t.id+':'+j+':'+r[0];
+  const r=(tg&&t.rows.find(x=>fid(x)===tg))||pick(t.rows),v=String(r[j+1]);
+  const others=shuffle(uniq(t.rows.map(x=>String(x[j+1])).filter(x=>x!==v))).slice(0,3);
+  const o=shuffle([v,...others]),d={};
+  o.forEach((x,i)=>{if(x===v)return;const who=t.rows.filter(y=>String(y[j+1])===x).map(y=>y[0]);d[i]='«'+x+'» — так для: '+who.slice(0,4).join(', ')+'.'+(t.rw&&t.rw[who[0]]?' ('+who[0]+': '+t.rw[who[0]]+')':'');});
+  return {kind:'one',lvl:(t.lv3||[]).includes(r[0])?3:1,key:'t1:'+t.id+':'+j+':'+r[0],q:c.q.replace(/\{x\}/g,r[0]),o,a:o.indexOf(v),d,why:(t.rw&&t.rw[r[0]])||(r[0]+': '+c.t.toLowerCase()+' — '+v+'.'),facts:[fid(r)]};}
+function tabMatch(t,j,tg){const c=t.cols[j],fid=r=>'t:'+t.id+':'+j+':'+r[0];
+  for(let tries=0;tries<12;tries++){
+    let rows=shuffle(t.rows);const tr=tg&&t.rows.find(x=>fid(x)===tg);if(tr)rows=[tr,...rows.filter(x=>x!==tr)];
+    rows=shuffle(rows.slice(0,Math.min(4,t.rows.length)));
+    const vals=uniq(rows.map(r=>String(r[j+1])));if(vals.length<2&&tries<11)continue;
+    const extra=shuffle(uniq(t.rows.map(r=>String(r[j+1]))).filter(v=>!vals.includes(v)));
+    const right=shuffle(vals.concat(extra.slice(0,Math.max(0,Math.min(6,Math.max(4,vals.length+1))-vals.length))));
+    return {kind:'match',lvl:rows.some(r=>(t.lv3||[]).includes(r[0]))?3:2,key:'tm:'+t.id+':'+j+':'+rows.map(r=>r[0]).join(),q:'Установите соответствие между '+(t.km||'объектом')+' и '+c.m+': к каждой позиции, обозначенной буквой, подберите позицию, обозначенную цифрой.',
+      left:rows.map(r=>r[0]),right,a:rows.map(r=>right.indexOf(String(r[j+1]))),lh:t.k||'',rh:c.t,dl:rows.map(r=>t.rw&&t.rw[r[0]]||''),facts:rows.map(fid),of:rows.map(fid)};}}
+function tabMulti(t,j,tg){const c=t.cols[j],fid=r=>'t:'+t.id+':'+j+':'+r[0];
+  const by={};t.rows.forEach(r=>(by[String(r[j+1])]=by[String(r[j+1])]||[]).push(r));
+  const N=Math.min(5,t.rows.length);
+  let vs=Object.keys(by).filter(v=>by[v].length>=2&&t.rows.length-by[v].length>=N-Math.min(3,by[v].length));
+  if(!vs.length)return null;
+  const tr=tg&&t.rows.find(x=>fid(x)===tg);let v=pick(vs);if(tr&&vs.includes(String(tr[j+1]))&&Math.random()<.6)v=String(tr[j+1]);
+  const k=Math.min(by[v].length,N-2>=3?pick([2,3]):2);
+  let yes=shuffle(by[v]).slice(0,k);if(tr&&String(tr[j+1])===v&&!yes.includes(tr))yes[0]=tr;
+  let no=shuffle(t.rows.filter(r=>String(r[j+1])!==v)).slice(0,N-k);if(tr&&String(tr[j+1])!==v&&!no.includes(tr))no[0]=tr;
+  const rows=shuffle(yes.concat(no));
+  const d={},dd={};rows.forEach((r,i)=>{if(!yes.includes(r))d[i]=r[0]+': '+c.t.toLowerCase()+' — '+r[j+1]+(t.rw&&t.rw[r[0]]?'. '+t.rw[r[0]]:'.');else if(t.rw&&t.rw[r[0]])dd[i]=t.rw[r[0]];});
+  return {kind:'multi',lvl:rows.some(r=>(t.lv3||[]).includes(r[0]))?3:2,key:'tk:'+t.id+':'+j+':'+rows.map(r=>r[0]).join(),q:c.mq.replace(/\{v\}/g,v).replace(/\{k\}/g,k===2?'два':'три').replace(/\{kf\}/g,k===2?'две':'три'),
+    o:rows.map(r=>r[0]),a:rows.map((r,i)=>yes.includes(r)?i:-1).filter(i=>i>=0),d,dd,why:'Верно: '+yes.map(r=>r[0]).join(', ')+' — '+c.t.toLowerCase()+': '+v+'.',facts:rows.map(fid),of:rows.map(fid)};}
+function rxWrite(r){const half=r.only==='coef'||r.half,start=r.l.filter(f=>!isE(f));
+  return {kind:'write',key:'rw:'+r.id,rx:r,lvl:r.lvl||2,why:r.why,h:r.h,facts:['r:'+r.id],
+    q:half?'Запиши полуреакцию'+(r.if?' ('+r.if+')':'')+'. Исходные частицы: '+start.join(', ')+'. Электроны — e⁻.'
+      :'Запиши уравнение реакции: '+r.l.join(' + ')+(r.if?' ('+r.if+')':'')+'. Продукты определи сам, коэффициенты — наименьшие целые.'};}
+const badF=b=>Array.isArray(b)?b[0]:b,badW=b=>Array.isArray(b)?b[1]:'';
+function rxProd(r){const right=r.r.join(' + '),bad=(r.bad||[]),opts=[right],d={};
+  shuffle(bad).forEach(b=>{if(opts.length>=4)return;const rr=r.r.slice();const i=rnd(rr.length);rr[i]=badF(b);const s=rr.join(' + ');if(!opts.includes(s)){opts.push(s);d[s]=badW(b)||('«'+badF(b)+'» здесь не образуется.');}});
+  shuffle(P.rx.filter(x=>x!==r&&x.sk===r.sk&&x.r.join(' + ')!==right)).forEach(x=>{if(opts.length>=4)return;const s=x.r.join(' + ');if(!opts.includes(s)){opts.push(s);d[s]='Так получится в другом случае: '+x.l.join(' + ')+(x.if?' ('+x.if+')':'')+'.';}});
+  if(opts.length<2)return null;const o=shuffle(opts),dd={};o.forEach((x,i)=>{if(d[x])dd[i]=d[x];});
+  return {kind:'one',lvl:1,key:'rp:'+r.id,q:'Какие вещества образуются: '+r.l.join(' + ')+(r.if?' ('+r.if+')':'')+'?',o,a:o.indexOf(right),d:dd,why:r.why||'',facts:['r:'+r.id]};}
+function rxOx(r){const o=r.l.slice();return {kind:'one',key:'ro:'+r.id,q:'В реакции '+eqStr(r.l,r.r,r.c)+' окислитель — это',o,a:r.ox,d:Object.fromEntries(o.map((f,i)=>[i,i===r.red?f+' — восстановитель.':f+' не является окислителем.']).filter(x=>+x[0]!==r.ox)),why:r.why||'',facts:['r:'+r.id]};}
+function seqItem(s){const perm=shuffle(s.items.map((x,i)=>i));return {kind:'seq',lvl:s.lvl||2,key:'sq:'+s.id,q:s.q,items:s.items,perm,why:s.why||'',facts:['s:'+s.id]};}
+function factMulti(fs,tg){const N=Math.min(5,fs.s.length),ids=fs.s.map((x,i)=>i);
+  let pickI=shuffle(ids).slice(0,N);const ti=tg?+tg.split(':').pop():-1;if(ti>=0&&!pickI.includes(ti))pickI[0]=ti;
+  const k=N>=5?pick([2,3]):2;const yes=new Set(shuffle(pickI).slice(0,k));
+  const o=pickI.map(i=>yes.has(i)?fs.s[i][0]:fs.s[i][1]),d={},dd={};
+  pickI.forEach((i,j)=>{if(!yes.has(i))d[j]='Неверно. Верно так: '+fs.s[i][0]+' '+fs.s[i][2];else dd[j]=fs.s[i][2];});
+  return {kind:'multi',lvl:fs.lvl||2,key:'fm:'+fs.id+':'+pickI.join(),q:'Выберите '+(k===2?'два':'три')+' верных утверждения'+(fs.t?' — '+fs.t.charAt(0).toLowerCase()+fs.t.slice(1):'')+'.',o,a:pickI.map((i,j)=>yes.has(i)?j:-1).filter(j=>j>=0),d,dd,facts:pickI.map(i=>'f:'+fs.id+':'+i),of:pickI.map(i=>'f:'+fs.id+':'+i)};}
+function factErr(fs,tg){const N=Math.min(6,fs.s.length);let ids=shuffle(fs.s.map((x,i)=>i)).slice(0,N);const ti=tg?+tg.split(':').pop():-1;if(ti>=0&&!ids.includes(ti))ids[0]=ti;
+  const k=N>=6?pick([2,3]):2;const bad=new Set(shuffle(ids).slice(0,k));if(ti>=0&&Math.random()<.5&&!bad.has(ti)){bad.delete([...bad][0]);bad.add(ti);}
+  return {kind:'err',lvl:3,key:'fe:'+fs.id+':'+ids.join(),q:'Найдите ошибки в тексте'+(fs.t?' «'+fs.t+'»':'')+'. Укажите номера ошибочных предложений (их '+k+').',
+    sent:ids.map(i=>bad.has(i)?fs.s[i][1]:fs.s[i][0]),a:ids.map((i,j)=>bad.has(i)?j:-1).filter(j=>j>=0),fix:ids.map(i=>bad.has(i)?fs.s[i][0]+' — '+fs.s[i][2]:''),facts:ids.map(i=>'f:'+fs.id+':'+i),of:ids.map(i=>'f:'+fs.id+':'+i)};}
+function calcItem(c){for(let t=0;t<60;t++){const env=calcEnv(c);let a;try{if(c.if&&!calcEval(c.if,env))continue;a=calcEval(c.a,env);}catch(e){return null;}
+  if(typeof a!=='number'||!isFinite(a)||a<0)continue;
+  return {kind:'num',lvl:c.lvl||2,key:'cn:'+c.id+':'+JSON.stringify(env),q:calcFill(c.q,env),a,dp:c.dp!=null?c.dp:2,tol:c.tol,unit:c.unit,ex:calcFill(c.ex,env),facts:['c:'+c.id]};}return null;}
+function figItem(g,tg,mode){const pool=mode===1?g.marks.filter(x=>x[2]):g.marks;const m=(tg&&pool.find(x=>'g:'+g.id+':'+x[0]===tg))||pick(pool);
+  const col=mode===1?2:mode===2?0:1,o=shuffle([m[col],...shuffle(pool.filter(x=>x!==m).map(x=>x[col])).slice(0,3)]);
+  const q=mode===1?'Какую функцию выполняет структура, обозначенная на рисунке цифрой '+m[0]+'?':mode===2?'Какой цифрой на рисунке обозначен объект «'+m[1]+'»?':'Что обозначено на рисунке цифрой '+m[0]+'?';
+  const d={};o.forEach((x,i)=>{if(x===m[col])return;const w=g.marks.find(y=>y[col]===x);if(w)d[i]=mode===2?'Цифрой '+x+' обозначено: '+w[1]+'.':'Это '+(mode===1?'функция структуры '+w[0]+' ('+w[1]+')':'цифра '+w[0])+'.';});
+  return {kind:'one',lvl:mode===1?2:1,key:'g'+mode+':'+g.id+':'+m[0],fig:g.id,q,o:mode===2?o.map(x=>'цифра '+x):o,a:o.indexOf(m[col]),d,why:m[0]+' — '+m[1]+(m[2]?': '+m[2]:''),facts:['g:'+g.id+':'+m[0]]};}
+function figMatch(g,tg){const wf=g.marks.filter(x=>x[2]);let ch=shuffle(wf);const t=tg&&wf.find(x=>'g:'+g.id+':'+x[0]===tg);if(t)ch=[t,...ch.filter(x=>x!==t)];
+  ch=shuffle(ch.slice(0,Math.min(5,wf.length)));const right=g.marks.map(x=>x[0]).sort((a,b)=>(parseFloat(a)||0)-(parseFloat(b)||0));
+  return {kind:'match',lvl:2,key:'gm:'+g.id+':'+ch.map(x=>x[0]).join(),fig:g.id,q:'Установите соответствие между характеристиками и структурами, обозначенными на рисунке цифрами:',
+    left:ch.map(x=>x[2]),right:right.map(x=>'цифра '+x),a:ch.map(x=>right.indexOf(x[0])),lh:'Характеристика',rh:'Структура',dl:ch.map(x=>'цифра '+x[0]+' — '+x[1]+'.'),
+    facts:ch.map(x=>'g:'+g.id+':'+x[0]),of:ch.map(x=>'g:'+g.id+':'+x[0])};}
+function figBox(id,src){const g=(P._fig||[]).find(x=>x.id===id);const file=g?g.file:src;if(!file)return null;
+  const w=h('div',{class:'figw'},h('img',{src:file,alt:g?g.t:'рисунок',loading:'lazy'}));
+  if(g&&g.hide)g.hide.forEach(([x0,y0,x1,y1])=>w.append(h('span',{class:'hdm',style:'left:'+(x0*100)+'%;top:'+(y0*100)+'%;width:'+((x1-x0)*100)+'%;height:'+((y1-y0)*100)+'%'})));
+  if(g&&g.pts)for(const k in g.pts){const [x,y]=g.pts[k];w.append(h('span',{class:'mk',style:'left:'+(x*100)+'%;top:'+(y*100)+'%'},k));}
+  return h('div',{},w,g&&g.t?h('div',{class:'xs mut',style:'text-align:center;margin:-4px 0 10px'},g.t):null);}
+function taskItem(t){const it=Object.assign({},t,{kind:t.type||'one',lvl:t.lvl||2,key:'task:'+t.id,why:t.ex||'',facts:[]});
+  if(it.kind==='seq')it.perm=shuffle(t.items.map((x,i)=>i));
+  if((it.kind==='one'||it.kind==='multi')&&t.shuffle!==false&&!/[0-9]\)/.test(t.q)){const idx=shuffle(t.o.map((x,i)=>i));it.o=idx.map(i=>t.o[i]);
+    const map=i=>idx.indexOf(i);it.a=Array.isArray(t.a)?t.a.map(map):map(t.a);it.d={};for(const k in (t.d||{}))it.d[map(+k)]=t.d[k];}
+  if(it.kind==='eqn'||it.kind==='short')it.alts=Array.isArray(t.a)?t.a:[t.a];
+  return it;}
+
+/* ---------- цикл навыка ---------- */
+function fadeItem(s,lvl){const f=s.fade;if(!f)return null;const B=f.steps.reduce((n,st)=>n+splitBlanks(st).filter(x=>typeof x!=='string').length,0);
+  const hide=lvl===0?0:lvl===1?Math.ceil(B/3):lvl===2?Math.ceil(2*B/3):B;
+  return {kind:'fade',key:'fade:'+s.id+':'+lvl,sk:s.id,q:f.q,steps:f.steps,hide,B,lvl,ref:f.ref||s.ref,why:f.why||''};}
+function stageItem(o,s,stage,kind){if(!o)return null;const it=taskItem(Object.assign({sk:s.id,ref:s.ref},o));it.key=kind+':'+s.id;it.stage=stage;return it;}
+function learnItems(sid){const s=P.SK[sid],L=[];const add=(it,st)=>{if(it){if(st)it.stage=st;it.sk=it.sk||sid;L.push(it);}};
+  if(s.pre){const it=stageItem(s.pre,s,'Вопрос до объяснения','pre');it.pre=true;add(it);}
+  add({kind:'info',key:'info:'+sid,sk:sid,ref:s.ref,stage:'Принцип'});
+  if(s.pair)add(stageItem(s.pair,s,'Контрастные случаи','pair'));
+  if(s.fade){add(fadeItem(s,0),'Разбор: читаем решение');add(fadeItem(s,1),'Разбор: часть шагов закрыта');add(fadeItem(s,3),'Разбор без подсказок');}
+  if(s.bug)add({kind:'bug',key:'bug:'+sid,sk:sid,ref:s.ref,q:s.bug.q,steps:s.bug.steps,bad:s.bug.bad,fix:s.bug.fix,why:s.bug.why},'Найди ошибку');
+  practice(sid,4).forEach(it=>add(it,'Практика'));
+  if(s.recall)add({kind:'recall',key:'recall:'+sid,sk:sid,ref:s.ref,q:s.recall.q,points:s.recall.points},'По памяти');
+  return L;}
+function reviewItems(sid){const s=P.SK[sid],L=practice(sid,3).map(it=>Object.assign(it,{stage:'Повтор навыка'}));
+  const lv=ST.fade[sid]||0;if(s.fade&&lv<3){const f=fadeItem(s,Math.min(3,lv+1));f.stage='Разбор: подсказок меньше';L.splice(1,0,f);}
+  if(s.recall)L.push(Object.assign({kind:'recall',key:'recall:'+sid,sk:sid,ref:s.ref,q:s.recall.q,points:s.recall.points},{stage:'По памяти'}));
+  return L;}
+const RECENT=[];
+function mk(g,tg){let it=null;try{it=g.make(tg);}catch(e){console.error('генератор',g.id,e);}
+  if(!it)return null;it._g=g.id;it.sk=it.sk||g.sk;it.n=it.n!=null?it.n:g.n;it.ref=it.ref||g.ref;it.cross=it.cross||g.cross;it.src=g.src;it.fmt=g.fmt;it.lvl=it.lvl||2;return it;}
+function novelty(it){let s=0;(it.facts||[]).forEach(f=>{const x=ST.facts[f];const v=!x||!x.n?2:x.bad?3:now()>=x.due?1:0;if(v>s)s=v;});return s;}
+function tlOf(sid){const m=ST.sk[sid],R=Rof(sid);if(!ST.learned[sid]||!m)return 2;return m.reps>=2&&R!=null&&R>=0.85?3:2;}
+function fromGens(gens,o){o=o||{};const only=o.only&&o.only.size?o.only:null,N=only?60:14;let best=null,bs=-1,seen=0;
+  for(let k=0;k<N;k++){const it=mk(pick(gens));if(!it)continue;if(only&&!only.has(it.lvl))continue;if(RECENT.includes(it.key)&&k<N-1)continue;
+    const sc=novelty(it)+(o.tl?(it.lvl===o.tl?2:it.lvl>o.tl?1:0):0)+Math.random()*1.5;if(sc>bs){best=it;bs=sc;}if(++seen>=4)break;}
+  if(best){RECENT.push(best.key);if(RECENT.length>12)RECENT.shift();}return best;}
+function practice(sid,n){const gens=P.G.filter(g=>g.sk===sid);if(!gens.length)return [];const out=[],used=new Set();
+  for(let i=0;i<n*4&&out.length<n;i++){const free=gens.filter(g=>!used.has(g.id));const it=fromGens(free.length?free:gens,{tl:tlOf(sid)});if(!it)continue;used.add(it._g);out.push(it);}
+  return out;}
+
+/* ===================== память ===================== */
+function mem(id){return ST.sk[id]||(ST.sk[id]={S:0,last:0,reps:0,lapses:0});}
+function Rof(id){const m=ST.sk[id];if(!m||!m.last)return null;return Math.pow(0.9,(now()-m.last)/DAY/Math.max(m.S,0.3));}
+const skDue=id=>{const m=ST.sk[id];return !!(m&&m.last&&now()>=m.last+m.S*DAY);};
+function updSkill(id,acc){const m=mem(id),el=m.last?(now()-m.last)/DAY:0;
+  if(acc>=0.8)m.S=m.S?Math.min(180,Math.max(m.S,m.S*(1+2*Math.min(1,el/m.S)))):1;
+  else if(acc<0.6){m.S=m.S?Math.max(0.3,m.S*0.4):0.3;m.lapses++;}
+  else m.S=Math.max(0.5,m.S||0.5);m.reps++;m.last=now();}
+function skStatus(id){const R=Rof(id);if(R==null)return ['n','не начат'];if(!ST.learned[id])return ['y','цикл не завершён'];
+  if(R>=0.9)return ['g','держится'];if(R>=0.75)return ['y','пора повторить'];return ['r','забывается'];}
+const FBOX=[0,1,3,7,16,35,80];
+function factRec(fid,ok){const f=ST.facts[fid]||(ST.facts[fid]={l:0,due:0,n:0,w:0});f.n++;f.last=now();
+  if(ok){if(f.bad){f.bad=0;f.l=Math.max(f.l,1);f.due=now()+DAY;}else if(now()>=f.due){f.l=Math.min(6,f.l+1);f.due=now()+FBOX[f.l]*DAY;}}
+  else{f.w++;f.bad=1;f.l=0;f.due=now();}}
+function fstat(fid,st){const f=(st||ST).facts[fid];if(!f||!f.n)return 'new';if(f.bad)return 'wrong';if(f.l>=3)return now()>=f.due?'sag':'ok';return 'learn';}
+const fDue=(f)=>!!(f&&f.n&&(f.bad||now()>=f.due));
+function factSum(sid){const c={ok:0,sag:0,learn:0,wrong:0,new:0,total:0};for(const fid in P.FX){if(sid&&P.FX[fid].sk!==sid)continue;c.total++;c[fstat(fid)]++;}return c;}
+
+/* ===================== проверка ответа (учёт strictYo!) ===================== */
+const nzText=(s,strictYo)=>{
+  let t=String(s==null?'':s).toLowerCase();
+  if(!strictYo)t=t.replace(/ё/g,'е');
+  return t.replace(/[\s.,;:!?«»"()]+/g,' ').trim();
+};
+const sameAns=(a,b,strictYo)=>/[А-Яа-яЁё]/.test(String(b))?nzText(a,strictYo)===nzText(b,strictYo):normF(a)===normF(b);
+function splitBlanks(st){const seg=[];let i=0,last=0;while(i<st.length){if(st[i]==='{'&&st[i-1]!=='^'&&st[i-1]!=='_'){let d=1,j=i+1;while(j<st.length&&d){if(st[j]==='{')d++;else if(st[j]==='}')d--;j++;}
+  if(!d){seg.push(st.slice(last,i));seg.push({raw:st.slice(i+1,j-1)});last=i=j;continue;}}i++;}seg.push(st.slice(last));return seg;}
+function fadeParse(it){if(it._bl)return;const bl=[];it._steps=it.steps.map(st=>splitBlanks(st).map(x=>{if(typeof x==='string')return x;const p=x.raw.split('|').map(y=>y.trim());const b={a:p[0],opts:p.length>1?p:null,i:bl.length};bl.push(b);return b;}));
+  it._bl=bl;const hideFrom=bl.length-it.hide;bl.forEach((b,i)=>b.hidden=i>=hideFrom);it._hidden=bl.filter(b=>b.hidden);}
+function grade(it,ans){const R={ok:false,part:0,fr:[],fw:[],msg:[],right:'',err:0},all=it.facts||[];const add=ok=>(ok?R.fr:R.fw).push(...all);
+  const syo=!!(RUS||it.strictYo);
+  switch(it.kind){
+  case 'one':R.ok=ans===it.a;R.right=it.o[it.a];if(!R.ok)R.msg.push(['Ты выбрал «'+it.o[ans]+'».',(it.d||{})[ans]||'']);add(R.ok);break;
+  case 'multi':case 'err':{const A=new Set(it.a),S=new Set(ans),n=it.kind==='err'?it.sent.length:it.o.length;
+    for(let i=0;i<n;i++){const good=A.has(i)===S.has(i);const f=it.of&&it.of[i];if(f)(good?R.fr:R.fw).push(f);if(good)continue;R.err++;
+      if(it.kind==='multi'){if(S.has(i))R.msg.push(['Лишнее: '+(i+1)+') «'+it.o[i]+'».',(it.d||{})[i]||'']);else R.msg.push(['Пропущено: '+(i+1)+') «'+it.o[i]+'».',(it.dd||{})[i]||'Это верно.']);}
+      else{if(S.has(i))R.msg.push(['Предложение '+(i+1)+' верное.','']);else R.msg.push(['Не найдена ошибка в предложении '+(i+1)+'.','Верно: '+it.fix[i]]);}}
+    R.ok=!R.err;R.part=Math.max(0,1-R.err/Math.max(2,A.size));R.right=[...A].sort((a,b)=>a-b).map(i=>i+1).join('');
+    if(it.kind==='err')R.fixes=[...A].sort((a,b)=>a-b).map(i=>'('+(i+1)+') '+it.fix[i]);break;}
+  case 'match':ans.forEach((x,i)=>{const good=x===it.a[i];const f=it.of&&it.of[i];if(f)(good?R.fr:R.fw).push(f);
+      if(!good){R.err++;R.msg.push([LET[i]+') '+it.left[i]+': верно '+(it.a[i]+1)+' — «'+it.right[it.a[i]]+'», у тебя '+(x+1)+'.',(it.dl||[])[i]||((it.d||{})[i])||'']);}});
+    if(!it.of)add(!R.err);R.ok=!R.err;R.part=1-R.err/it.left.length;R.right=it.a.map(x=>x+1).join('');break;
+  case 'seq':{const right=it.items.map((x,j)=>it.perm.indexOf(j));ans.forEach((x,i)=>{if(x!==right[i])R.err++;});R.ok=!R.err;R.part=Math.max(0,1-R.err/right.length);
+    R.right=right.map(x=>x+1).join('');add(R.ok);if(!R.ok)R.msg.push(['Верный порядок:',it.items.map((x,i)=>(i+1)+'. '+x).join('\n')]);break;}
+  case 'short':R.ok=it.alts.some(a=>sameAns(ans,a,syo));R.right=it.alts[0];add(R.ok);break;
+  case 'stress':R.ok=ans===it.a;R.right=it.marked;if(!R.ok)R.msg.push(['Ударная гласная в этом слове другая.',it.why||'Правильно: '+it.marked]);add(R.ok);break;
+  case 'ortho':R.ok=sameAns(ans,it.a,true);R.right=it.tpl.replace('_',it.a);if(!R.ok)R.msg.push(['Написано «'+it.tpl.replace('_',ans)+'».',it.why||'Пишется «'+it.a+'».']);add(R.ok);break;
+  case 'punct':{const A=new Set(it.a),S=new Set(ans);it.nums.forEach(num=>{const good=A.has(num)===S.has(num);if(!good)R.err++;
+      const w=(it.pwhy||{})[String(num)];if(!good)R.msg.push(['Позиция ('+num+'): '+(A.has(num)?'запятая нужна':'запятая НЕ нужна')+'.',w||'']);});
+    R.ok=!R.err;R.part=Math.max(0,1-R.err/Math.max(2,it.nums.length));R.right=it.a.join('')||'нет';add(R.ok);break;}
+  case 'num':{const x=parseFloat(String(ans).replace(',','.').replace(/\s/g,''));const dp=it.dp!=null?it.dp:2;
+    const tol=Math.max(Math.abs(it.a)*(it.tol!=null?it.tol:0.01),0.5*Math.pow(10,-dp));R.ok=isFinite(x)&&Math.abs(x-it.a)<=tol+1e-9;
+    R.right=num(it.a,dp)+(it.unit?' '+it.unit:'');add(R.ok);break;}
+  case 'eqn':gradeEq(R,ans,it.alts.map(eqParse).filter(Boolean),it.bad);R.right=it.alts[0];add(R.ok);break;
+  case 'write':gradeEq(R,ans,[rxMap(it.rx)].concat((it.rx.alt||[]).map(eqParse).filter(Boolean)),it.rx.bad);R.right=eqStr(it.rx.l,it.rx.r,it.rx.c);add(R.ok);break;
+  case 'fade':{fadeParse(it);let okc=0;it._hidden.forEach((b,i)=>{if(sameAns(ans[i],b.a,syo))okc++;else R.msg.push(['Пропуск '+(i+1)+': верно «'+uni(b.a)+'», у тебя «'+(uni(ans[i])||'—')+'».','']);});
+    R.part=it._hidden.length?okc/it._hidden.length:1;R.ok=okc===it._hidden.length;break;}
+  case 'bug':R.ok=ans===it.bad;R.right='шаг '+(it.bad+1);break;}
+  if(R.ok)R.part=1;return R;}
+function rightAns(it){switch(it.kind){case 'seq':return it.items.map((x,j)=>it.perm.indexOf(j));case 'short':case 'eqn':return it.alts[0];
+  case 'write':return eqStr(it.rx.l,it.rx.r,it.rx.c);case 'fade':fadeParse(it);return it._hidden.map(b=>b.a);case 'bug':return it.bad;default:return it.a;}}
+
+/* ===================== запись результата ===================== */
+const strip=it=>JSON.parse(JSON.stringify(it,(k,v)=>k[0]==='_'?undefined:v));
+function rec(it,R,conf){const t=now(),d=dkey(t);
+  if(conf&&ST.cal[conf]){ST.cal[conf][1]++;if(R.ok)ST.cal[conf][0]++;}
+  ST.log.push({t,k:it.key,s:it.sk||'',n:it.n||0,ok:R.ok?1:0,p:Math.round((R.part||0)*100)/100,c:conf||'',f:it.fmt||it.kind,pre:it.pre?1:0});
+  if(ST.log.length>3000)ST.log.splice(0,ST.log.length-3000);ST.days[d]=(ST.days[d]||0)+1;
+  RUN.n++;if(R.ok)RUN.ok++;
+  if(RUN.exam&&it.n&&P._kim[it.n]){const b=P._kim[it.n].b;RUN.max+=b;RUN.pts+=it.kind==='part2'?R.pts:R.ok?b:(b===2&&R.err===1?1:0);}
+  if(!it.pre){
+    if(it.sk&&P.SK[it.sk]){const r=RUN.res[it.sk]||(RUN.res[it.sk]={s:0,n:0});r.s+=R.ok?1:(R.part||0);r.n++;}
+    R.fr.forEach(f=>factRec(f,true));R.fw.forEach(f=>factRec(f,false));
+    if(it.kind==='fade'&&R.ok&&it.sk)ST.fade[it.sk]=Math.max(ST.fade[it.sk]||0,it.lvl);
+    const e=ST.red.find(x=>x.key===it.key);
+    if(e){if(R.ok&&conf!=='guess'){if(e.okd!==d){e.s++;e.okd=d;}if(e.s>=2){ST.red=ST.red.filter(x=>x!==e);RUN.redOut++;R.redOut=true;}}else if(!R.ok){e.s=0;e.t=t;e.okd='';}}
+    else if(!R.ok&&(conf==='sure'||conf==='maybe')&&!['info','recall','part2'].includes(it.kind)){ST.red.push({key:it.key,it:strip(it),c:conf,t,s:0,sk:it.sk});RUN.redIn++;R.redIn=true;}}
+  save();}
+
+/* ===================== прохождение ===================== */
+const CONF=[['sure','Точно знаю'],['maybe','Скорее да'],['guess','Наугад']];
+function startRun(title,items,o){o=o||{};RUN=Object.assign({title,items:items.filter(Boolean),i:0,res:{},n:0,ok:0,redIn:0,redOut:0,pts:0,max:0,gen:null,max_n:items.length},o);
+  if(RUN.gen&&!RUN.items.length){const it=RUN.gen();if(it)RUN.items.push(it);}
+  if(!RUN.items.length){alert('Для этого набора нет заданий.');RUN=null;return;}VIEW='run';render();window.scrollTo(0,0);}
+function next(){RUN.i++;if(RUN.i>=RUN.items.length&&RUN.gen&&RUN.i<(RUN.limit||1e9)){const it=RUN.gen();if(it)RUN.items.push(it);}
+  if(RUN.i>=RUN.items.length)return finish();render();window.scrollTo(0,0);}
+function applyRun(){if(!RUN)return;for(const sid in RUN.res){const r=RUN.res[sid];if(r.n)updSkill(sid,r.s/r.n);}
+  if(RUN.learn&&RUN.i>=RUN.items.length-1){ST.learned[RUN.learn]=now();if(!mem(RUN.learn).last){mem(RUN.learn).S=1;mem(RUN.learn).last=now();}}save();}
+function finish(){applyRun();RUN.done=true;VIEW='result';render();window.scrollTo(0,0);}
+function leaveRun(){if(RUN&&!RUN.done){applyRun();}RUN=null;}
+const btnPri=(t,fn)=>h('button',{class:'btn pri',onclick:fn},t);
+let KEYS=null;
+document.addEventListener('keydown',e=>{if(VIEW!=='run'||!KEYS)return;const tg=e.target.tagName;if((tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT')&&e.key!=='Enter')return;if(tg==='TEXTAREA')return;if(tg==='BUTTON'&&(e.key==='Enter'||e.key===' '))e.preventDefault();KEYS(e);});
+
+function viewRun(){const it=RUN.items[RUN.i];KEYS=null;const w=h('div');
+  const total=RUN.gen?null:RUN.items.length;
+  w.append(h('div',{class:'row',style:'justify-content:space-between;margin-bottom:6px'},h('b',{},RUN.title),h('button',{class:'lnk',onclick:()=>finish()},'Завершить')));
+  if(total)w.append(h('div',{class:'prog'},h('i',{style:'width:'+Math.round(RUN.i/total*100)+'%'})));
+  const card=h('div',{class:'card'});w.append(card);
+  const sk=it.sk&&P.SK[it.sk],kim=it.n&&P._kim&&P._kim[it.n];
+  card.append(h('div',{class:'stage'},h('span',{},(RUN.i+1)+(total?' из '+total:'')),it.stage?h('span',{class:'tag'},it.stage):it.fmt?h('span',{class:'tag n'},FMTN[it.fmt]||''):null,
+    kim?h('span',{class:'tag y'},'№'+it.n+' ЕГЭ · '+kim.b+' '+plur(kim.b,'балл','балла','баллов')):null,it.lvl===3?h('span',{class:'tag r'},'максимум'):null,
+    it.cross&&it.cross.length?h('span',{class:'tag n'},'сквозное · +'+it.cross.join(', ')):null,sk?h('span',{},sk.name):null,it._red?h('span',{class:'tag r'},'Красная папка'):null));
+  if(it.fig||it.img)card.append(figBox(it.fig,it.img));
+  if(it.cases)card.append(h('div',{class:'cases'},it.cases.map(c=>h('div',{class:'case'},F(c[0],'b'),F(c[1],'div')))));
+  if(it.kind==='info')return infoCard(w,card,it);
+  if(it.q)card.append(F(it.q,'div','q'));
+  const body=h('div');card.append(body);(RENDER[it.kind]||RENDER.one)(body,it);
+  const ctl=h('div',{style:'margin-top:14px'});card.append(ctl);
+  const confirmAnswer=(cb,edit)=>{const locked=it._L,controls=[...body.querySelectorAll('button,input,textarea,select')].map(el=>({el,disabled:el.disabled,readOnly:el.readOnly}));
+    it._lock&&it._lock();controls.forEach(({el})=>el.disabled=true);ctl.innerHTML='';
+    askConf(ctl,cb,()=>{it._L=locked;controls.forEach(({el,disabled,readOnly})=>{el.disabled=disabled;if(readOnly!=null)el.readOnly=readOnly;});delete it._ans;edit();});};
+  if(it.kind==='fade'&&it.hide===0){ctl.append(btnPri('Понятно, дальше →',next));KEYS=e=>{if(e.key==='Enter')next();};}
+  else if(it.kind==='recall'){ctl.append(btnPri('Показать эталон',()=>{it._lock&&it._lock();ctl.innerHTML='';selfCheck(it,card,null);}));}
+  else if(it.kind==='part2'){const edit=()=>{ctl.innerHTML='';ctl.append(btnPri('Сверить с эталоном',()=>confirmAnswer(c=>selfCheck(it,card,c),edit)));KEYS=null;};edit();}
+  else{const go=()=>{const a=it._get();if(a==null){warnMsg.textContent=it._need||'Сначала дай ответ.';return;}it._ans=a;confirmAnswer(c=>resolve(it,card,c),edit);};
+    const warnMsg=h('span',{class:'sm mut',style:'margin-left:10px'}),edit=()=>{ctl.innerHTML='';warnMsg.textContent='';ctl.append(btnPri('Ответить',go),warnMsg);
+      KEYS=e=>{if(e.key==='Enter'){e.preventDefault();go();}else if(it._key)it._key(e.key);};};edit();}
+  return w;}
+function infoCard(w,card,it){const s=P.SK[it.sk];card.append(h('h3',{},s.name));if(s.idea)card.append(F(s.idea,'div','q'));
+  card.append(konPanel(it.ref,true));card.append(h('div',{style:'margin-top:14px'},btnPri('Понятно, дальше →',next)));KEYS=e=>{if(e.key==='Enter')next();};return w;}
+function askConf(ctl,cb,edit){if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();const box=h('div',{class:'conf'},h('div',{class:'sm',style:'font-weight:600;margin-bottom:8px'},'Насколько ты уверен?'),
+    h('div',{class:'row'},CONF.map(([k,t],i)=>h('button',{class:'btn sm',onclick:()=>{KEYS=null;box.remove();cb(k);}},(i+1)+' · '+t))));
+  if(edit)box.append(h('button',{class:'lnk',style:'margin-top:10px',onclick:()=>{KEYS=null;box.remove();edit();}},'Изменить ответ'));
+  ctl.append(box);KEYS=e=>{const i=+e.key-1;if(i>=0&&i<3){KEYS=null;box.remove();cb(CONF[i][0]);}};}
+function resolve(it,card,conf){const R=grade(it,it._ans);it._paint&&it._paint(R);rec(it,R,conf);card.append(feedback(it,R,conf));}
+function feedback(it,R,conf){const cls=R.ok?'ok':R.part>0?'part':'bad';const box=h('div',{class:'fb '+cls});
+  const head=it.kind==='part2'||it.kind==='recall'?(it.kind==='part2'?'Баллы: '+R.pts+' из '+R.max:'Вспомнил '+R.pts+' из '+R.max):R.ok?'Верно':R.part>0?'Частично верно ('+pct(R.part)+')':'Неверно';
+  box.append(h('div',{class:'hd'},head));
+  if(it.pre)box.append(h('div',{class:'sm'},'Это вопрос до объяснения: ошибка здесь нормальна и в статистику не идёт.'));
+  if(!R.ok&&R.right&&it.kind!=='fade')box.append(h('div',{},'Правильный ответ: ',F(R.right,'b')));
+  R.msg.forEach(([a,b])=>box.append(h('div',{class:'wn'},F(a,'b'),b?' ':null,b?F(b):null)));
+  if(R.fixes)box.append(h('div',{class:'why'},h('b',{},'Исправления: '),h('div',{html:fmt(R.fixes.join('\n'))})));
+  if(it.kind==='bug')box.append(h('div',{class:'why'},h('div',{},h('b',{},'Как правильно: '),F(it.fix)),h('div',{class:'mut sm',style:'margin-top:4px'},F(it.why))));
+  const why=it.kind==='bug'?'':(it.why||it.ex||'');if(why)box.append(h('div',{class:'why'},h('b',{},it.kind==='num'?'Решение. ':'Почему. '),F(why)));
+  if(it.h&&it.h.length)box.append(h('div',{class:'why sm',html:fmt(it.h.join('\n'))}));
+  if(R.redIn)box.append(h('div',{class:'wn',style:'border-color:var(--red)'},h('b',{},'Уверенная ошибка — в Красную папку. '),'Вернётся, пока не ответишь верно в два разных дня.'));
+  if(R.redOut)box.append(h('div',{class:'sm',style:'margin-top:6px'},'✓ Ушло из Красной папки.'));
+  if(conf==='guess'&&R.ok)box.append(h('div',{class:'sm mut',style:'margin-top:6px'},'Угадал — повторим ещё.'));
+  const kb=konBtn(it.ref);if(kb)box.append(kb);
+  const nb=btnPri('Дальше →',next);nb.style.marginTop='12px';box.append(h('div',{},nb));setTimeout(()=>nb.focus(),0);
+  KEYS=e=>{if(e.key==='Enter'){e.preventDefault();next();}};return box;}
+function selfCheck(it,card,conf){const crit=it.kind==='part2'?it.crit.map(c=>[c[0],c[1]||1]):it.points.map(p=>[p,1]);const max=it.kind==='part2'?(it.max||crit.reduce((s,c)=>s+c[1],0)):crit.length;
+  const box=h('div',{class:'fb'});box.append(h('div',{class:'hd'},it.kind==='part2'?'Эталон':'Что нужно было вспомнить'));
+  if(it.ideal)box.append(F(it.ideal,'div'));
+  const cbs=crit.map(()=>h('input',{type:'checkbox'}));
+  box.append(h('div',{class:'sm mut',style:'margin-top:10px'},it.kind==='part2'?'Отметь элементы, которые есть в твоём ответе:':'Отметь, что ты вспомнил:'),
+    h('div',{class:'pts'},crit.map((c,i)=>h('label',{},cbs[i],h('span',{html:fmt(c[0])+(it.kind==='part2'?' <span class="mut">('+c[1]+' б.)</span>':'')})))));
+  const ok=btnPri('Засчитать',()=>{let sc=0;cbs.forEach((x,i)=>{if(x.checked)sc+=crit[i][1];});if(it.kind==='part2')sc=Math.min(sc,max);
+    const R={ok:sc>=max,part:max?sc/max:0,fr:[],fw:[],msg:[],pts:sc,max,err:max-sc};if(it.kind==='recall')R.ok=R.part>=0.8;
+    box.remove();rec(it,R,conf);card.append(feedback(it,R,conf));});
+  ok.style.marginTop='10px';box.append(ok);card.append(box);KEYS=null;}
+
+function konBtn(ref){if(!ref||!P.konspekt)return null;const box=h('div');const b=h('button',{class:'lnk',onclick:()=>{if(box.firstChild)box.innerHTML='';else box.append(konPanel(ref));}},'📖 Объяснение в учебнике');return h('div',{style:'margin-top:10px'},b,box);}
+const konUrl=mod=>{const tb=P._meta&&P._meta.textbook?TOPICS_DIR+P._meta.textbook:TOPICS_DIR+(P.subjectSlug||'chemistry')+'/'+P.konspekt+'/dist/'+P.konspekt+'.html';return tb+'#m-'+mod;};
+function konPanel(ref){const w=h('div');[].concat(ref||[]).forEach(r=>{const K=P._kon||{},k=K[r]||K[String(r).split('.')[0]],mod=String(r).split('.')[0];
+  w.append(h('div',{class:'kon'},k?[F(k.t,'div','t'),F(k.x,'div')]:h('div',{class:'mut'},'Выдержки нет.'),h('div',{style:'margin-top:6px'},h('a',{href:konUrl(mod),target:'_blank',rel:'noopener'},'Открыть модуль '+mod+' в учебнике ↗'))));});return w;}
+const skMods=sid=>(P._skm&&P._skm[sid])||[String((P.SK[sid]||{}).ref||'').split('.')[0]].filter(Boolean);
+const modName=m=>(P._mods&&P._mods[m])||'';
+function modLine(sid,cls){const ms=skMods(sid);if(!ms.length||!P.konspekt)return null;
+  return h('div',{class:cls||'xs mut'},'📘 Учебник: ',ms.map((m,i)=>[i?', ':'',h('a',{href:konUrl(m),target:'_blank',rel:'noopener'},'модуль '+m,modName(m)?[' «',F(modName(m)),'»']:null)]));}
+
+/* ---------- отрисовка заданий ---------- */
+const RENDER={};
+function readNumbers(value,max){const s=value.trim();if(!s)return [];if(!/^\d+(?:[\s,;]+\d+)*$/.test(s))return null;
+  const a=(max<10?s.replace(/[\s,;]/g,'').split(''):s.split(/[\s,;]+/)).map(x=>Number(x)-1);
+  return a.every(x=>x>=0&&x<max)&&new Set(a).size===a.length?a:null;}
+const numberText=(a,max)=>a.map(x=>x+1).join(max<10?'':' ');
+const numberEntry=(label,oninput)=>h('input',{type:'text',class:'digits answer-entry',inputmode:'numeric',autocomplete:'off','aria-label':label,placeholder:'—',oninput});
+const KBK={
+  chem:[['→','стрелка реакции'],['⇄','обратимая'],['+',''],['−','минус'],['↑','газ'],['↓','осадок'],['⁺','заряд +'],['⁻','заряд −'],['²',''],['³',''],['e⁻','электрон'],['·','кристаллогидрат'],['t°','нагревание'],['≡',''],['(',''],[')',''],['[',''],[']','']],
+  bio:[['→',''],['×','скрещивание'],['♀','женская особь'],['♂','мужская особь'],['·',''],['⁺',''],['⁻',''],['²',''],['½',''],['¼',''],['¾',''],['%','']],
+  rus:[['ё','буква ё'],['ъ','твёрдый знак'],['ь','мягкий знак'],['—','тире'],['«',''],['»',''],['́','ударение']]
+};
+function symKb(inp){let sup=false;
+  const ins=t=>{const a=inp.selectionStart!=null?inp.selectionStart:inp.value.length,b=inp.selectionEnd!=null?inp.selectionEnd:a;
+    inp.value=inp.value.slice(0,a)+t+inp.value.slice(b);const q=a+t.length;try{inp.setSelectionRange(q,q);}catch(e){}inp.focus();inp.dispatchEvent(new Event('input'));};
+  const tg=CHEM||!RUS?h('button',{type:'button',class:'tgl',title:'Режим верхнего индекса',onmousedown:e=>e.preventDefault(),onclick:()=>{sup=!sup;tg.classList.toggle('on',sup);inp.focus();}},'x²'):null;
+  if(tg)inp.addEventListener('beforeinput',e=>{if(!sup||e.inputType!=='insertText'||!e.data)return;
+    const m=[...e.data].map(c=>(CHEM&&/[A-Za-z]/.test(c))?c:(SUPM[c]||c)).join('');if(m!==e.data){e.preventDefault();ins(m);}});
+  const keys=RUS?KBK.rus:(CHEM?KBK.chem:KBK.bio);
+  return h('div',{class:'kb'},tg,keys.map(([k,t])=>h('button',{type:'button',title:t||k,onmousedown:e=>e.preventDefault(),
+    onclick:()=>ins(k==='+'?' + ':(k==='→'||k==='⇄'||k==='−'||k==='×')?' '+k+' ':k)},k)));}
+
+RENDER.one=(b,it)=>{let sel=null;const bs=it.o.map((o,i)=>h('button',{class:'opt',onclick:()=>{if(it._L)return;sel=i;bs.forEach((x,j)=>x.classList.toggle('on',j===i));}},h('span',{class:'nm'},String(i+1)),F(o)));
+  b.append(h('div',{class:'opts'},bs));it._get=()=>sel;it._lock=()=>{it._L=1;bs.forEach(x=>x.disabled=true);};
+  it._paint=()=>{bs[it.a].classList.add('ok');if(sel!==it.a&&bs[sel])bs[sel].classList.add('bad');};it._key=k=>{const i=+k-1;if(i>=0&&i<bs.length)bs[i].click();};};
+function renderNumberSet(b,it,items,errors){let selected=[];const dg=numberEntry('Ответ — номера вариантов',()=>{selected=readNumbers(dg.value,items.length)||[];upd(false);});
+  const upd=(write=true)=>{if(write)dg.value=numberText(selected,items.length);bs.forEach((x,i)=>x.classList.toggle('on',selected.includes(i)));};
+  const bs=items.map((o,i)=>h('button',{class:errors?'step':'opt',onclick:()=>{if(it._L)return;selected=selected.includes(i)?selected.filter(x=>x!==i):selected.concat(i);upd();}},
+    h(errors?'b':'span',{class:errors?null:'nm'},errors?'('+(i+1)+') ':String(i+1)),F(o)));
+  b.append(h('div',{class:'sm mut'},errors?'Нажми на предложения с ошибками или введи номера.':'Выбери варианты или введи их номера.'),
+    h('div',{class:errors?'steps':'opts'},bs),h('div',{class:'row sm mut',style:'margin-top:8px'},h('label',{},'Ответ: ',dg),h('button',{class:'lnk',onclick:()=>{if(it._L)return;selected=[];upd();}},'сбросить')));
+  it._get=()=>{const a=readNumbers(dg.value,items.length);return a&&a.length?a:null;};it._need='Введи номера вариантов.';
+  it._lock=()=>{it._L=1;bs.forEach(x=>x.disabled=true);dg.readOnly=true;};
+  it._paint=()=>bs.forEach((x,i)=>{if(it.a.includes(i))x.classList.add(errors&&!selected.includes(i)?'bad':'ok');else if(selected.includes(i))x.classList.add('bad');});
+  it._key=k=>{const i=+k-1;if(i>=0&&i<bs.length)bs[i].click();};}
+RENDER.multi=(b,it)=>renderNumberSet(b,it,it.o,false);
+RENDER.err=(b,it)=>renderNumberSet(b,it,it.sent,true);
+RENDER.match=(b,it)=>{const ans=it.left.map(()=>null);const rows=[];
+  b.append(h('div',{class:'mt'},h('div',{},it.lh?h('div',{class:'sm mut'},it.lh.toUpperCase()):null,it.left.map((x,i)=>h('div',{},h('b',{},LET[i]+') '),F(x)))),
+    h('div',{},it.rh?h('div',{class:'sm mut'},it.rh.toUpperCase()):null,it.right.map((x,i)=>h('div',{},h('b',{},(i+1)+') '),F(x))))));
+  const grid=h('div',{style:'margin-top:12px'});
+  it.left.forEach((x,i)=>{const bs=it.right.map((y,j)=>h('button',{class:'nb',onclick:()=>{if(it._L)return;ans[i]=j;bs.forEach((z,k)=>z.classList.toggle('on',k===j));}},String(j+1)));rows.push(bs);grid.append(h('div',{class:'mrow'},h('span',{class:'lt'},LET[i]),bs));});
+  b.append(grid);it._get=()=>ans.every(x=>x!=null)?ans.slice():null;it._need='Выбери цифру для каждой буквы.';it._lock=()=>{it._L=1;};
+  it._paint=()=>rows.forEach((bs,i)=>{bs[it.a[i]].classList.add('ok');if(ans[i]!==it.a[i])bs[ans[i]].classList.add('bad');});};
+RENDER.seq=(b,it)=>{let ord=[];const dg=numberEntry('Последовательность',()=>{ord=readNumbers(dg.value,it.items.length)||[];upd(false);});let bs;
+  const upd=(write=true)=>{if(write)dg.value=numberText(ord,it.items.length);bs.forEach((x,k)=>{x.classList.toggle('on',ord.includes(k));});};
+  bs=it.perm.map((j,k)=>h('button',{class:'step',onclick:()=>{if(it._L)return;const p=ord.indexOf(k);if(p>=0)ord.splice(p,1);else ord.push(k);upd();}},h('b',{},(k+1)+') '),F(it.items[j])));
+  b.append(h('div',{class:'sm mut'},'Нажимай пункты по порядку или введи цифры:'),h('div',{class:'steps'},bs),
+    h('div',{class:'row sm mut',style:'margin-top:8px'},h('label',{},'Порядок: ',dg),h('button',{class:'lnk',onclick:()=>{if(it._L)return;ord=[];upd();}},'сбросить')));
+  it._get=()=>{const a=readNumbers(dg.value,it.items.length);return a&&a.length===it.items.length?a:null;};it._need='Укажи все пункты.';it._lock=()=>{it._L=1;dg.readOnly=true;};};
+function textInp(b,it,ph){const inp=h('input',{class:'inp',placeholder:ph||'Ответ',autocomplete:'off'});b.append(inp,symKb(inp));setTimeout(()=>inp.focus(),0);
+  it._get=()=>inp.value.trim()?inp.value.trim():null;it._lock=()=>{inp.readOnly=true;};
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&KEYS){e.preventDefault();KEYS(e);}});return inp;}
+RENDER.short=(b,it)=>textInp(b,it);
+RENDER.eqn=RENDER.write=(b,it)=>{const inp=textInp(b,it,'Например: 2H2 + O2 → 2H2O');const pv=h('div',{class:'eqline',style:'min-height:2em'});
+  inp.after(pv);inp.addEventListener('input',()=>{pv.innerHTML=inp.value.trim()?fmt(toMk(inp.value)):'';});
+  b.append(h('div',{class:'xs mut',style:'margin-top:4px'},'Индексы — обычными цифрами (H2SO4), заряды — x² или ⁺ ⁻.'));};
+RENDER.num=(b,it)=>{textInp(b,it,'Число');if(it.unit)b.append(h('span',{class:'mut',style:'margin-left:6px'},it.unit));};
+RENDER.stress=(b,it)=>{let sel=null;const btns={};const box=h('div',{class:'stress-word'});
+  [...it.word].forEach((ch,i)=>{if(it.vIndices.includes(i)){const btn=h('button',{type:'button',class:'vbtn',onclick:()=>{if(it._L)return;sel=i;Object.entries(btns).forEach(([k,x])=>x.classList.toggle('on',+k===i));}},ch);btns[i]=btn;box.append(btn);}else box.append(document.createTextNode(ch));});
+  b.append(box);it._get=()=>sel;it._need='Выбери ударную гласную.';it._lock=()=>{it._L=1;Object.values(btns).forEach(x=>x.disabled=true);};
+  it._paint=()=>{if(btns[it.a])btns[it.a].classList.add('ok');if(sel!=null&&sel!==it.a&&btns[sel])btns[sel].classList.add('bad');};};
+RENDER.ortho=(b,it)=>{const parts=it.tpl.split('_');
+  b.append(h('div',{class:'ortho-word'},parts[0],h('span',{class:'gap'},'_'),parts[1]||''));
+  if(it.opts&&it.opts.length){let sel=null;const bs=it.opts.map(op=>h('button',{type:'button',class:'btn sm',onclick:()=>{if(it._L)return;sel=op;bs.forEach(x=>x.classList.toggle('pri',x===bs[it.opts.indexOf(op)]));}},op));
+    b.append(h('div',{class:'row'},bs));it._get=()=>sel;it._need='Выбери букву.';it._lock=()=>{it._L=1;bs.forEach(x=>x.disabled=true);};
+    it._paint=()=>{bs.forEach((x,i)=>{if(it.opts[i]===it.a)x.style.borderColor='var(--ok)';else if(it.opts[i]===sel)x.style.borderColor='var(--bad)';});};}
+  else{textInp(b,it,'Впиши букву (ё и е различаются!)');}};
+RENDER.punct=(b,it)=>{const sel=new Set(),btns={};const box=h('div',{class:'punct-sent'});
+  const toks=String(it.text).split(/(\(\d+\))/g);
+  toks.forEach(tk=>{const m=tk.match(/^\((\d+)\)$/);if(m){const n=+m[1];const btn=h('button',{type:'button',class:'pbtn',onclick:()=>{if(it._L)return;sel.has(n)?sel.delete(n):sel.add(n);btn.classList.toggle('on',sel.has(n));}},'('+n+')');btns[n]=btn;box.append(btn);}else box.append(document.createTextNode(tk));});
+  b.append(h('div',{class:'sm mut',style:'margin-bottom:6px'},'Нажми на номера, где нужны запятые (или нажми «Ответить» сразу, если запятые не нужны):'),box);
+  it._get=()=>[...sel].sort((a,b)=>a-b);it._lock=()=>{it._L=1;Object.values(btns).forEach(x=>x.disabled=true);};
+  it._paint=()=>{const A=new Set(it.a);it.nums.forEach(n=>{if(A.has(n))btns[n].classList.add('ok');else if(sel.has(n))btns[n].classList.add('bad');});};};
+RENDER.fade=(b,it)=>{fadeParse(it);const ctrls=[];
+  const box=h('div',{class:'steps'});it._steps.forEach(seg=>{const d=h('div',{class:'step'});seg.forEach(x=>{if(typeof x==='string'){if(x)d.append(F(x));return;}
+    if(!x.hidden){d.append(h('span',{class:'bl',html:fmt(x.a)}));return;}
+    let c;if(x.opts){c=h('select',{},h('option',{value:''},'…'),shuffle(x.opts).map(o=>h('option',{value:o},uni(o))));}else c=h('input',{placeholder:'…',autocomplete:'off'});
+    ctrls.push({c,x});d.append(c);});box.append(d);});
+  b.append(h('div',{class:'sm mut'},it.hide>0?(it.hide===it.B?'Подсказок нет:':'Часть шагов закрыта:'):'Прочитай решение.'),box);
+  it._get=()=>{const v=ctrls.map(o=>o.c.value.trim());return v.every(Boolean)?v:null;};it._need='Заполни все пропуски.';
+  it._lock=()=>ctrls.forEach(o=>o.c.disabled=true);
+  it._paint=()=>ctrls.forEach(o=>{const ok=sameAns(o.c.value,o.x.a,RUS);const s=h('span',{class:'bl '+(ok?'ok':'bad'),html:ok?fmt(o.x.a):'<s>'+esc(uni(o.c.value))+'</s> '+fmt(o.x.a)});o.c.replaceWith(s);});};
+RENDER.bug=(b,it)=>{let sel=null;const bs=it.steps.map((s,i)=>h('button',{class:'step',onclick:()=>{if(it._L)return;sel=i;bs.forEach((x,j)=>x.classList.toggle('on',j===i));}},h('b',{},'Шаг '+(i+1)+'. '),F(s)));
+  b.append(h('div',{class:'sm mut'},'Нажми на шаг с ошибкой.'),h('div',{class:'steps'},bs));
+  it._get=()=>sel;it._lock=()=>{it._L=1;};it._paint=()=>{bs[it.bad].classList.add('ok');if(sel!==it.bad)bs[sel].classList.add('bad');};};
+RENDER.recall=(b,it)=>{const ta=h('textarea',{class:'inp',placeholder:'Напиши по памяти — своими словами.'});b.append(ta,symKb(ta));it._lock=()=>{ta.readOnly=true;};};
+RENDER.part2=(b,it)=>{const ta=h('textarea',{class:'inp',placeholder:'Запиши развёрнутое решение…'});b.append(ta,symKb(ta));it._lock=()=>{ta.readOnly=true;};};
+
+/* ===================== вкладки ===================== */
+function plan(){const red=ST.red.slice().sort((a,b)=>a.t-b.t);
+  const dueF=Object.keys(P.FX).filter(f=>fDue(ST.facts[f])).sort((a,b)=>(ST.facts[b].bad||0)-(ST.facts[a].bad||0)||ST.facts[a].due-ST.facts[b].due);
+  const dueS=P.skills.filter(s=>ST.learned[s.id]&&skDue(s.id)).sort((a,b)=>Rof(a.id)-Rof(b.id)).map(s=>s.id);
+  const neu=P.skills.find(s=>!ST.learned[s.id]);return {red,dueF,dueS,neu:neu?neu.id:null};}
+function factItems(fids,n){const out=[],cov=new Set();
+  for(const f of fids){if(out.length>=n)break;if(cov.has(f))continue;const gens=(P.FX[f]||{}).gens||[];
+    const prec=shuffle(gens.filter(g=>['one','rx','seq','num','stress','ortho','punct'].includes(g.fmt))),pool=shuffle(gens.filter(g=>!prec.includes(g)));
+    for(const g of prec.concat(pool)){const it=mk(g,f);if(it&&(it.facts||[]).includes(f)){it.stage=ST.facts[f]&&ST.facts[f].bad?'Факт: была ошибка':'Факт: повтор по сроку';(it.facts||[]).forEach(x=>cov.add(x));out.push(it);break;}}}
+  return out;}
+const redItems=list=>list.map(e=>Object.assign(JSON.parse(JSON.stringify(e.it)),{_red:true,stage:'Красная папка'}));
+function todayItems(p){let L=redItems(p.red.slice(0,6)).concat(factItems(p.dueF,12));p.dueS.slice(0,2).forEach(s=>L=L.concat(reviewItems(s)));
+  let learn=null;if(p.neu&&L.length<16){L=L.concat(learnItems(p.neu));learn=p.neu;}return {L,learn};}
+function viewToday(){const w=h('div'),p=plan();
+  w.append(h('h1',{},P.title),h('div',{class:'mut sm',style:'margin-bottom:12px'},P.subject+' · коды '+P.codes.join(', ')+(P._kim?' · задания ЕГЭ №'+Object.keys(P._kim).join(', №'):'')+' · версия '+P.version));
+  const T=todayItems(p);const c=h('div',{class:'card'});w.append(c);
+  c.append(h('h2',{style:'margin-top:0'},'План на сегодня'));
+  c.append(h('div',{class:'stat'},h('div',{class:'tile red'},h('b',{},String(p.red.length)),'Красная папка'),h('div',{class:'tile'},h('b',{},String(p.dueF.length)),'фактов к повтору'),
+    h('div',{class:'tile'},h('b',{},String(p.dueS.length)),plur(p.dueS.length,'навык','навыка','навыков')+' к повтору'),h('div',{class:'tile'},h('b',{style:'font-size:16px'},p.neu?P.SK[p.neu].name:'—'),p.neu?'новый навык':'все навыки начаты')));
+  c.append(h('div',{class:'row',style:'margin-top:14px'},T.L.length?btnPri('Начать занятие · '+T.L.length+' '+plur(T.L.length,'задание','задания','заданий'),()=>startRun('Занятие на сегодня',T.L,{learn:T.learn})):h('span',{class:'mut'},'На сегодня всё сделано. Можно тренироваться в «Генераторе».'),
+    p.red.length?h('button',{class:'btn sm',onclick:()=>startRun('Красная папка',redItems(p.red))},'Только Красная папка'):null,
+    p.neu&&!T.learn?h('button',{class:'btn sm',onclick:()=>startRun('Новый навык: '+P.SK[p.neu].name,learnItems(p.neu),{learn:p.neu})},'Учить новый навык'):null));
+  w.append(memoryCard(),statsCard());if(ST.red.length)w.append(redCard());return w;}
+function bar(parts){return h('div',{class:'bar'},parts.filter(x=>x[0]>0).map(([v,col])=>h('i',{style:'width:'+(v*100)+'%;background:'+col})));}
+function memoryCard(){const c=h('div',{class:'card'});c.append(h('h2',{style:'margin-top:0'},'Карта памяти'));
+  const fs=factSum();const tot=fs.total||1;
+  c.append(h('div',{class:'sm',style:'margin-bottom:6px'},'Факты: ',h('b',{},fs.ok+fs.sag),' из '+fs.total+' освоено'));
+  c.append(bar([[fs.ok/tot,'var(--ok)'],[fs.sag/tot,'var(--warn)'],[fs.learn/tot,'var(--acc)'],[fs.wrong/tot,'var(--bad)']]));
+  const tb=h('table',{},h('tr',{},h('th',{},'Навык'),h('th',{},'Память'),h('th',{},'Состояние'),h('th',{},'Повтор'),h('th',{},'Факты')));
+  P.skills.forEach(s=>{const R=Rof(s.id),[cl,st]=skStatus(s.id),m=ST.sk[s.id],f=factSum(s.id),ft=f.total||1;
+    tb.append(h('tr',{},h('td',{},s.name,modLine(s.id)),h('td',{style:'min-width:90px'},R==null?h('span',{class:'mut'},'—'):[bar([[R,R>=0.9?'var(--ok)':R>=0.75?'var(--warn)':'var(--bad)']]),h('span',{class:'xs'},pct(R))]),
+      h('td',{},h('span',{class:'tag '+cl},st)),h('td',{class:'sm'},m&&m.last?inDays(m.last+m.S*DAY-now()):'—'),
+      h('td',{style:'min-width:80px'},f.total?[bar([[(f.ok+f.sag)/ft,'var(--ok)'],[f.learn/ft,'var(--acc)'],[f.wrong/ft,'var(--bad)']]),h('span',{class:'xs mut'},(f.ok+f.sag)+'/'+f.total)]:h('span',{class:'mut xs'},'—'))));});
+  c.append(h('div',{style:'overflow-x:auto'},tb));return c;}
+function statsCard(){const c=h('div',{class:'card'});c.append(h('h2',{style:'margin-top:0'},'Статистика'));
+  const L=ST.log.filter(x=>!x.pre),wk=L.filter(x=>x.t>now()-7*DAY);let streak=0;for(let d=0;d<400;d++){if(ST.days[dkey(now()-d*DAY)])streak++;else if(d>0)break;}
+  const acc=a=>a.length?pct(a.reduce((s,x)=>s+(x.ok?1:x.p||0),0)/a.length):'—';
+  c.append(h('div',{class:'stat'},h('div',{class:'tile'},h('b',{},String(L.length)),'ответов всего'),h('div',{class:'tile'},h('b',{},acc(wk)),'верно за 7 дней'),h('div',{class:'tile'},h('b',{},acc(L)),'верно за всё время'),h('div',{class:'tile'},h('b',{},String(streak)),plur(streak,'день','дня','дней')+' подряд')));
+  return c;}
+function redCard(){const c=h('div',{class:'card'});c.append(h('h2',{style:'margin-top:0'},'Красная папка · '+ST.red.length));
+  const ul=h('ul',{class:'sm'});ST.red.slice().sort((a,b)=>b.t-a.t).slice(0,15).forEach(e=>ul.append(h('li',{},F(plain(e.it.q||e.it.stage||'задание').slice(0,140)),' ',h('span',{class:'tag '+(e.s?'y':'r')},e.s?'1 из 2':'ошибка'))));
+  c.append(ul);return c;}
+
+function viewKod(){const w=h('div'),K=P.kod||{};w.append(h('h1',{},'Код темы'));
+  if(K.p&&K.p.length){const c=h('div',{class:'card'});w.append(c);c.append(h('h2',{style:'margin-top:0'},'Принципы'));
+    K.p.forEach((x,i)=>c.append(h('div',{class:'prin'},h('div',{class:'n'},(i+1)+'. ',F(x.t)),F(x.x,'div'),konBtn(x.ref))));}
+  if(K.z&&K.z.length){const c=h('div',{class:'card'});w.append(c);c.append(h('h2',{style:'margin-top:0'},'Нужно помнить'),h('ul',{},K.z.map(x=>h('li',{style:'margin:6px 0'},F(x.x)))));}
+  const c=h('div',{class:'card'});w.append(c);c.append(h('h2',{style:'margin-top:0'},'Навыки'));
+  P.skills.forEach(s=>{const [cl,st]=skStatus(s.id),cnt=P.G.filter(g=>g.sk===s.id).length;
+    c.append(h('div',{style:'border-top:1px solid var(--line);padding:12px 0'},h('div',{class:'row',style:'justify-content:space-between'},h('b',{},s.name),h('span',{class:'tag '+cl},st)),
+      modLine(s.id,'sm mut'),s.idea?F(s.idea,'div','sm'):null,
+      h('div',{class:'row',style:'margin-top:8px'},h('button',{class:'btn sm pri',onclick:()=>startRun('Учим: '+s.name,learnItems(s.id),{learn:s.id})},ST.learned[s.id]?'Пройти цикл заново':'Учить'),
+        cnt?h('button',{class:'btn sm',onclick:()=>{const g=P.G.filter(x=>x.sk===s.id);startRun('Практика: '+s.name,[],{gen:()=>fromGens(g),limit:10});}},'10 задач'):null)));});
+  return w;}
+
+let GS=null;
+function viewGen(){if(!GS||GS.pid!==P.id)GS={pid:P.id,m:new Set(),sk:new Set(),n:new Set(),f:new Set(),l:new Set(),cnt:20};const w=h('div');
+  w.append(h('h1',{},'Генератор'));
+  const gm=g=>[].concat(g.ref||[]).map(r=>String(r).split('.')[0]);
+  const sel=()=>P.G.filter(g=>(!GS.m.size||gm(g).some(m=>GS.m.has(m)))&&(!GS.sk.size||GS.sk.has(g.sk))&&(!GS.n.size||GS.n.has(String(g.n)))&&(!GS.f.size||GS.f.has(g.fmt)));
+  const info=h('div',{class:'sm mut',style:'margin-top:10px'});const upd=()=>{const n=sel().length;info.textContent=n?'Источников задач: '+n:'Под фильтр задач нет.';};
+  const chips=(set,list)=>h('div',{class:'chips'},list.map(([v,t])=>{const b=h('button',{class:'chip'+(set.has(v)?' on':''),html:fmt(t),onclick:()=>{set.has(v)?set.delete(v):set.add(v);b.classList.toggle('on');upd();}});return b;}));
+  const c=h('div',{class:'card'});w.append(c);
+  c.append(h('h3',{},'Навыки'),chips(GS.sk,P.skills.filter(s=>P.G.some(g=>g.sk===s.id)).map(s=>[s.id,s.name])));
+  const ns=uniq(P.G.filter(g=>g.n).map(g=>String(g.n))).sort((a,b)=>a-b);
+  if(ns.length)c.append(h('h3',{style:'margin-top:14px'},'Задания ЕГЭ'),chips(GS.n,ns.map(n=>[n,'№'+n])));
+  const fs=uniq(P.G.map(g=>g.fmt)).filter(Boolean);c.append(h('h3',{style:'margin-top:14px'},'Формат'),chips(GS.f,fs.map(f=>[f,FMTN[f]||f])));
+  c.append(h('h3',{style:'margin-top:14px'},'Сложность'),chips(GS.l,[[1,'База'],[2,'Уровень ЕГЭ'],[3,'Максимум']]));
+  c.append(h('div',{class:'row',style:'margin-top:16px'},btnPri('Старт',()=>{const g=sel();if(!g.length)return;startRun('Генератор',[],{gen:()=>fromGens(g,{only:GS.l}),limit:GS.cnt});})),info);upd();
+  const kim=Object.keys(P._kim||{}).sort((a,b)=>a-b);
+  const variant=max=>{const L=[];kim.forEach(n=>{const g=P.G.filter(x=>String(x.n)===n);if(!g.length)return;const t=g.filter(x=>x.task);
+    const it=(max&&fromGens(g,{only:new Set([3])}))||fromGens(t.length&&Math.random()<.6?t:g,{tl:max?3:2});if(it)L.push(it);});
+    startRun(max?'Вариант максимальной сложности':'Вариант по теме',L,{exam:true});};
+  if(kim.length)w.append(h('div',{class:'card'},h('h3',{},'Вариант по теме'),h('div',{class:'row'},btnPri('Собрать вариант',()=>variant(false)),h('button',{class:'btn',onclick:()=>variant(true)},'Вариант максимальной сложности'))));
+  return w;}
+
+let TR_CLI_CMD='';
+async function copyText(txt){
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(txt);return true;}}catch(e){}
+  try{const ta=h('textarea',{style:'position:fixed;opacity:0'});ta.value=txt;document.body.append(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok;}catch(e){return false;}
+}
+function resetPackProgress(m){
+  if(!confirm('Сбросить весь прогресс тренажёра «'+m.title+'» в этом браузере?'))return;
+  LS.del('tr-state-'+m.id);
+  if(P&&P.id===m.id)ST=freshState();
+  render();
+}
+function viewTopics(){const w=h('div',{},h('h1',{},'Темы тренажёра'));
+  if(TR_CLI_CMD){
+    const inp=h('input',{type:'text',readonly:true,class:'inp',style:'max-width:none;font-family:ui-monospace,Consolas,monospace;font-size:13px',value:TR_CLI_CMD,onclick:e=>e.target.select()});
+    w.append(h('div',{class:'card'},h('div',{class:'xs mut',style:'margin-bottom:6px'},'Команда для удаления пакета с диска (выполните в корне проекта):'),inp));
+  }
+  const row=(m,removed)=>h('div',{class:'row topic-row'},h('div',{class:'topic-name'},h('h3',{},m.title),h('div',{class:'xs mut'},[m.subject,m.version].filter(Boolean).join(' · '))),
+    h('div',{class:'row'},
+      h('button',{class:'btn sm',onclick:()=>removed?restorePack(m.id):removePack(m.id)},removed?'Вернуть':'Скрыть'),
+      h('button',{class:'btn sm',onclick:()=>resetPackProgress(m)},'Сбросить прогресс'),
+      h('button',{class:'btn sm bad',onclick:async()=>{const slug=m.subjectSlug||(/хим/i.test(m.subject)?'chemistry':/био/i.test(m.subject)?'biology':'russian');TR_CLI_CMD='python core/cli.py remove '+slug+' '+m.id+' --what trainer';await copyText(TR_CLI_CMD);render();}},'Удалить с диска')));
+  w.append(h('div',{class:'card'},h('h2',{style:'margin-top:0'},'Доступные · '+LIST.length),LIST.length?LIST.map(m=>row(m,false)):h('p',{class:'sm mut'},'Тем пока нет.')));
+  const removed=CATALOG.filter(m=>REMOVED.has(m.id));
+  if(removed.length)w.append(h('div',{class:'card'},h('h2',{style:'margin-top:0'},'Скрытые · '+removed.length),removed.map(m=>row(m,true))));
+  return w;}
+function viewHow(){const w=h('div');w.append(h('h1',{},'Как это работает'));
+  const file=h('input',{type:'file',accept:'.json',class:'hide',onchange:e=>importBackup(e.target.files[0])});
+  w.append(h('div',{class:'card'},h('h3',{},'Прогресс и резервная копия'),h('div',{class:'row'},
+    h('button',{class:'btn sm',onclick:exportBackup},'Сохранить копию прогресса'),
+    h('button',{class:'btn sm',onclick:()=>file.click()},'Загрузить копию'),file)));
+  return w;}
+function exportBackup(){const data={};LS.keys().filter(k=>k.startsWith('tr-state-')).forEach(k=>data[k]=LS.get(k,null));
+  const a=h('a',{href:URL.createObjectURL(new Blob([JSON.stringify({app:'trener-ege100',v:1,date:new Date().toISOString(),data})],{type:'application/json'})),download:'ege100-trener-backup.json'});document.body.append(a);a.click();a.remove();}
+function importBackup(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const b=JSON.parse(r.result);if(!b.data)throw 0;
+  for(const k in b.data)LS.set(k,b.data[k]);if(P)ST=Object.assign(freshState(),LS.get('tr-state-'+P.id,{}));render();}catch(e){alert('Неверный файл.');}};r.readAsText(f);}
+
+const TABS=[['today','Сегодня'],['kod','Код темы'],['gen','Генератор'],['topics','Темы'],['how','Прогресс']];
+function tabs(){const n=$('#tabs');n.innerHTML='';TABS.forEach(([v,t])=>n.append(h('button',{class:VIEW===v?'on':'',onclick:()=>{if(VIEW==='run')leaveRun();VIEW=v;render();window.scrollTo(0,0);}},t)));}
+function viewEmpty(){
+  if(CATALOG.length>0&&REMOVED.size>0){
+    return h('div',{class:'card empty'},h('h1',{},'Все пакеты тренажёра скрыты'),h('p',{class:'mut'},'В этом браузере скрыто пакетов: '+REMOVED.size+'. Вы можете вернуть их во вкладке «Темы».'),
+      h('button',{class:'btn pri',onclick:()=>{VIEW='topics';render();}},'Открыть скрытые темы'));
+  }
+  return h('div',{class:'card empty'},h('h1',{},'Тренировочных пакетов пока нет'),h('p',{class:'mut'},'Собери пакет тренажёра командой python core/cli.py trener-build <subject> <id>.'));
+}
+function viewResult(){const w=h('div'),c=h('div',{class:'card'});w.append(c);c.append(h('h1',{},RUN.title+' — готово'));
+  c.append(h('div',{class:'stat'},h('div',{class:'tile'},h('b',{},RUN.ok+' / '+RUN.n),'верных ответов'),RUN.exam&&RUN.max?h('div',{class:'tile'},h('b',{},RUN.pts+' / '+RUN.max),'первичных баллов'):null,
+    h('div',{class:'tile red'},h('b',{},'+'+RUN.redIn),'в Красную папку'),h('div',{class:'tile'},h('b',{},String(RUN.redOut)),'ушло из Красной папки')));
+  c.append(h('div',{class:'row',style:'margin-top:14px'},btnPri('К плану на сегодня',()=>{RUN=null;VIEW='today';render();}),h('button',{class:'btn',onclick:()=>{RUN=null;VIEW='gen';render();}},'В генератор')));return w;}
+function render(){tabs();const a=$('#app');a.innerHTML='';
+  if(VIEW==='topics'){a.append(viewTopics());return;}
+  if(!P&&VIEW==='how'){a.append(viewHow());return;}
+  if(!P){a.append(viewEmpty());return;}
+  CHEM=/хим/i.test(P.subject);RUS=/рус/i.test(P.subject);
+  try{a.append(VIEW==='run'&&RUN?viewRun():VIEW==='result'&&RUN?viewResult():VIEW==='kod'?viewKod():VIEW==='gen'?viewGen():VIEW==='how'?viewHow():viewToday());}
+  catch(e){console.error(e);a.append(h('div',{class:'card'},h('h3',{},'Ошибка отображения'),h('pre',{class:'xs'},String(e.stack||e))));}}
+const THEMES=['auto','light','paper','dark'];
+const THEME_ICONS={auto:'◐',light:'☀',paper:'▤',dark:'☾'};
+const THEME_NAMES={auto:'Авто',light:'Светлая',paper:'Бумага',dark:'Тёмная'};
+function applyTheme(){const raw=LS.get(THEME_KEY,'auto');const t=THEMES.includes(raw)?raw:'auto';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);const b=$('#theme');b.textContent=THEME_ICONS[t];b.title='Тема: '+THEME_NAMES[t]+' (Авто → Светлая → Бумага → Тёмная)';const mc=document.querySelector('meta[name="theme-color"]');if(mc)mc.setAttribute('content',t==='paper'?'#f6efe1':t==='dark'?'#0f1621':'#0f766e');}
+$('#theme').onclick=()=>{const raw=LS.get(THEME_KEY,'auto');const i=THEMES.indexOf(raw);LS.set(THEME_KEY,THEMES[(i+1)%THEMES.length]);applyTheme();};
+$('#sync').onclick=()=>syncWithCloud({reload:true,silent:false});
+$('#sel').onchange=e=>{leaveRun();openPack(e.target.value);};
+
+async function selfTest(){const out=[];let bad=0,total=0;
+  for(const m of LIST){let p;try{p=await loadPack(m.id);}catch(e){out.push('✗ '+m.id+': '+e.message);bad++;continue;}
+    const keepP=P,keepS=ST;P=p;ST=freshState();CHEM=/хим/i.test(p.subject);RUS=/рус/i.test(p.subject);RUN={res:{},n:0,ok:0};
+    for(const g of p.G){let made=0;for(let k=0;k<25;k++){const it=mk(g);if(!it)continue;made++;if(['part2','recall'].includes(it.kind))break;total++;const R=grade(it,rightAns(it));if(!R.ok){bad++;out.push('✗ '+m.id+' '+g.id+': эталонный ответ не засчитан');break;}
+        if(it.kind==='ortho'&&/е/.test(it.a)){if(grade(it,it.a.replace(/е/g,'ё')).ok){bad++;out.push('✗ '+m.id+' '+g.id+': ё не отделена от е');break;}}
+        if(it.kind==='write'||it.kind==='eqn'){const typed=uni(rightAns(it)).replace(/ → /,' -> ');if(!grade(it,typed).ok){bad++;out.push('✗ '+m.id+' '+g.id+': запись не прочитана');break;}}}
+      if(!made){out.push('• '+m.id+' '+g.id+': пустой генератор');}}
+    p.skills.forEach(s=>{const L=learnItems(s.id);L.forEach(it=>{if(['info','recall','part2'].includes(it.kind)||(it.kind==='fade'&&it.hide===0))return;total++;const R=grade(it,rightAns(it));if(!R.ok){bad++;out.push('✗ '+m.id+' цикл '+s.id+' '+it.kind);}});});
+    P=keepP;ST=keepS;}
+  RUN=null;window.SELFTEST={bad,total,out};console.log('SELFTEST',bad,total,out.join('\n'));
+  $('#app').prepend(h('div',{class:'card'},h('h3',{},'Самопроверка движка: '+(bad?'ошибок '+bad:'ошибок нет')+' · проверено заданий '+total),h('pre',{class:'xs',style:'white-space:pre-wrap'},out.join('\n')||'—')));}
+
+(async()=>{applyTheme();tabs();if(GH){GH.registerSW('./sw.js');if(GH.isConfigured())await syncWithCloud({reload:false,silent:true});}await loadList();fillSel();
+  const qp=new URLSearchParams(location.search).get('topic');
+  if(LIST.length)await openPack(qp||LS.get('tr-pack',null));else render();
+  if(/selftest/.test(location.search))selfTest();})();
+})();
+</script>
+</body>
+</html>
